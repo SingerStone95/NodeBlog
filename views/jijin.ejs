@@ -1,0 +1,133 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>基金-路漫漫其修远兮，吾将上下而求索</title>
+    <link href="../css/bootstrap.css" rel='stylesheet' type='text/css' />
+    <!-- jQuery (necessary JavaScript plugins) -->
+    <script src="../js/jquery.min.js"></script>
+    <!-- Custom Theme files -->
+    <link href="../css/dashboard.css" rel="stylesheet">
+    <link href="../css/style.css" rel='stylesheet' type='text/css' />
+    <!--//Custom Theme files -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <meta name="keywords" content="Scott Jeremy" />
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.metisMenu.js"></script>
+    <script src="js/jquery.slimscroll.min.js"></script>
+    <script src="js/sweetalert.min.js"></script>
+    <script src="js/inspinia.js"></script>
+    <script src="js/pace.min.js"></script>
+    <script src="http://cdn.hcharts.cn/highcharts/highcharts.js"></script>
+
+</head>
+<body>
+    <!-- header -->
+    <div class="col-md-2 sidebar">
+        <div class="sidebar_top">
+            <h1><a href="/">Singer<span> Stone</span></a></h1>
+        </div>
+        <div class="top-navigation">
+            <div class="t-menu">菜单</div>
+
+            <div class="t-img">
+                <img src="../images/lines.png" alt="" />
+            </div>
+            <div class="clearfix"> </div>
+        </div>
+        <div class="drop-navigation">
+            <div class="top-menu">
+                <ul>
+                  <li class="/"><a href="/">主页</a></li>
+                  <li><a href="/ReactNative">ReactNative</a></li>
+                  <li><a href="/NodeJS">NodeJS</a></li>
+                  <li><a href="/Android">Android</a></li>
+                  <li><a href="/writeAvr">随记</a></li>
+                  <li><a href="/jijin">基金</a></li>
+                  <li><a href="/login">登录到管理页</a></li>
+                  <li><a href="/About">关于我</a></li>
+                  <li><a href="/comment">留言</a></li>
+              </ul>
+          </div>
+          <!-- script-for-menu -->
+          <script>
+            $( ".top-navigation" ).click(function() {
+                $( ".drop-navigation" ).slideToggle( 300, function() {
+                    // Animation complete.
+                });
+            });
+        </script>
+        <div class="side-btm">
+            <div class="copyright">
+                <p>Design by SingerStone</p>
+                <p>Copyright &copy; 2016.SingerStone All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-10 col-sm-offset-3 col-md-10 col-md-offset-2">
+   <div>
+    <div class="col-sm-12">
+        <nav>
+            <ul id="chart_list">
+            </ul>
+        </nav>
+    </div>
+    <div class="message"></div>
+</div>
+</div>
+<div class="clearfix"></div>
+<script type="text/javascript">
+    function getOptions(datas){
+        var x=new Array();
+        var y=new Array();
+        for (var i=0;i<datas.length;i++){
+            x[i]=datas[i].time;
+            var yString=datas[i].ratio;
+            var yFloat = parseFloat(yString.split(' ')[1].split('%')[0]);
+            y[i]=yFloat;
+        }
+  // 图表配置
+  var options = {
+    chart: {
+                type: 'column'                          //指定图表的类型，默认是折线图（line）
+            },
+            title: {
+                text: "增长趋势图"                 // 标题
+            },
+            xAxis: {
+                categories:x   // x 轴分类
+            },
+            yAxis: {
+                title: {
+                    text: '增长率'                // y 轴标题
+                },
+                plotLines: [{
+                 value: 0,
+                 width: 1,
+                 color: '#808080'
+             }]
+         },
+         series: [{  
+           color: '#ff0000',  
+                negativeColor: '#00ff00',                          // 数据列
+                name: datas[0].name,                        // 数据列名
+                data: y                     // 数据
+            }]
+        };
+        return options;
+    }
+    
+    var datas=JSON.parse(JSON.stringify(<%- allResult%>));
+        // 图表初始化函数
+        for(i=0;i<datas.length;i++){
+            console.log(datas[i]);
+            var options=getOptions(datas[i]);
+             $("#chart_list").append("<li id='chart"+i+"' style='min-width:400px;height:400px'></li>");
+            Highcharts.chart('chart'+i, options);
+        }
+    </script>
+</body>
+</html>

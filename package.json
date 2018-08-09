@@ -1,0 +1,26 @@
+{
+  "name": "blog",
+  "version": "1.1.0",
+  "description": "Secend init",
+  "main": "app.js",
+  "dependencies": {
+    "assert": "^1.4.1",
+    "body-parser": "^1.15.2",
+    "crypto": "0.0.3",
+    "ejs": "^2.5.5",
+    "express": "^4.14.0",
+    "express-session": "^1.14.2",
+    "formidable": "^1.0.17",
+    "gm": "^1.23.0",
+    "moment": "^2.17.1",
+    "mongodb": "^2.2.16",
+    "morgan": "^1.5.3",
+    "serve-favicon": "^2.2.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "singerstone",
+  "license": "singerstone all rights ."
+}

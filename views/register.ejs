@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EAblog管理员登陆-路漫漫其修远兮，吾将上下而求索</title>
+
+    <link href="admin/bootstrap.min.css" rel="stylesheet">
+    <link href="admin/animate.css" rel="stylesheet">
+    <link href="admin/style.css" rel="stylesheet">
+    <meta name="keywords" content="Scott Jeremy" />
+
+</head>
+
+<body class="gray-bg">
+
+<div class="middle-box text-center loginscreen   animated fadeInDown">
+    <div>
+        <h3>EAblog管理员注册</h3>
+        <form class="m-t" role="form" action="login.html">
+            <div class="form-group">
+                <input type="text" class="form-control" id="username" placeholder="请输入用户名" required="">
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control" id="password" placeholder="请输入注册密码" required="">
+            </div>
+
+            <input type="button" id="login" class="btn btn-primary block full-width m-b" value="注册">
+        </form>
+        <p class="m-t"> <small>Copyright &copy; 2016.Scott All rights reserved.</small> </p>
+    </div>
+</div>
+
+<!-- Mainly scripts -->
+<script src="admin/jquery-2.1.1.js"></script>
+<script src="admin/bootstrap.min.js"></script>
+
+<script>
+    //用ajax提交表单
+    $('#login').click(function () {
+        $.post("/doRegister",{
+            "username" : $("#username").val(),
+            "password" : $("#password").val()
+
+        },function (result) {
+            if(result == "1"){
+                alert("注册成功！跳转到首页！");
+                window.location.href = "/recording";
+            }else if(result == "-3"){
+                alert("服务器错误！");
+            }else{
+                alert("未知原因，登陆失败");
+            }
+        });
+
+    });
+</script>
+
+</body>
+
+</html>

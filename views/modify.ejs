@@ -1,0 +1,201 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>修改博客-路漫漫其修远兮，吾将上下而求索</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+
+    <!-- 网站后台样式开始 -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style2.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/editormd.css" />
+    <!-- 网站后台样式结束 -->
+
+    <!-- Ueditor开始 -->
+    <script type="text/javascript" charset="utf-8" src="libs/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="libs/ueditor/ueditor.all.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="libs/ueditor/lang/zh-cn/zh-cn.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <!-- Ueditor结束 -->
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <nav class="navbar-default navbar-static-side" role="navigation">
+            <div class="sidebar-collapse">
+                <ul class="nav metismenu" id="side-menu">
+                    <li class="nav-header">
+                        <div class="dropdown profile-element"> <span>
+                            <img alt="image" class="img-circle" src="images/profile_small.jpg"/>
+                        </span>
+                    </div>
+                    <div class="logo-element">
+                        Singer
+                    </div>
+                </li>
+                <li class="active">
+                    <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">博客管理</span><span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level collapse">
+                     <li><a href="/">主页</a></li>
+                     <li><a href="/recording">写博客</a></li>
+                     <li><a href="/manage">博客文章管理</a></li>
+                 </ul>
+             </li>
+         </ul>
+
+     </div>
+ </nav>
+
+
+ <div id="page-wrapper" class="gray-bg">
+    <div class="row border-bottom">
+        <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+            </div>
+            <ul class="nav navbar-top-links navbar-right">
+                <li>
+                    <span class="m-r-sm text-muted welcome-message">欢迎来到管理后台</span>
+                </li>
+
+                <li>
+                    <a href="/unlogin">
+                        <i class="fa fa-sign-out"></i> 退出登录
+                    </a>
+                </li>
+            </ul>
+
+        </nav>
+    </div>
+
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-content">
+                        <div class="row">
+                            <div class="col-sm-12"><h3 class="m-t-none m-b">修改博客--<small>后台管理系统</small></h3>
+                                <form role="form" class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 col-sm-offset-1 control-label">文章标题：</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" value="<%= allResult.topic %>"  class="form-control" id="topic" name="topic">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 col-sm-offset-1 control-label">发布者：</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" value="<%= allResult.publisher %>" class="form-control" id="publisher" name="publisher">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 col-sm-offset-1 control-label">博客类别：</label>
+                                        <div class="col-sm-6">
+                                            <select class="form-control m-b" id="classify" name="classify">
+                                                <option value="KF">ReactNative</option>
+                                                <option value="QP">NodeJS</option>
+                                                <option value="KM">Android</option>
+                                                <option value="KQ">writeAvr</option>
+                                            </select>
+                        
+                                        </div>
+                                    </div>
+                                       <!--  <div class="form-group">
+                                            <label class="col-sm-2 col-sm-offset-1 control-label">博客内容：</label>
+                                           <div class="col-sm-6">
+                                                <script id="editor" name="editor" type="text/plain" style="width:1024px;height:500px;"></script>
+                                            </div>
+                                        </div> -->
+                                        <div id="test-editormd">
+                                            <textarea style="display:none;"><%- allResult.content %></textarea>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <input class="col-sm-offset-5 col-sm-1 btn btn-primary" id="update" type="button" value="修改">
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="footer">
+            <div>
+                <strong>Copyright</strong> &copy; 2016.SingerStone All rights reserved. 
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="js/jquery.min.js"></script>
+<script src="js/editormd.min.js"></script>
+<script type="text/javascript">
+
+//markdowm
+
+var testEditor;
+
+$(function() {
+    testEditor = editormd("test-editormd", {
+        width   : "90%",
+        height  : 640,
+        syncScrolling : "single",
+        path    : "lib/"
+    });
+
+
+});
+
+
+window.onload=function(){ 
+ for(var i=0;i<document.getElementById("classify").options.length;i++){
+        if(document.getElementById("classify").options[i].text =="<%= allResult.classify %>"){
+            document.getElementById("classify").options[i].selected=true;     
+        }
+    }
+};
+
+    $(document).ready(function () {
+        $("#update").click(function () {
+            //var content = UE.getEditor('editor').getContent();
+            var content=testEditor.getMarkdown();
+            var classify= $('#classify').find("option:selected").text();
+            $.post("/update", {
+                "ID":"<%= allResult.ID %>",
+                "topic" : $("#topic").val(),
+                "publisher" : $("#publisher").val(),
+                "classify" : classify,
+                "visitNum":<%= allResult.visitNum %>,
+                "thumbsUp":<%= allResult.thumbsUp %>,
+                "content" : content
+            }, function (result) {
+                if(result == 1){
+                    alert("修改文章成功！将跳转首页查看");
+                    window.location.href = "/";
+                }else if(result == -1){
+                    alert("服务器错误！请检查服务器");
+                }else{
+                    alert("未知原因，修改文章失败！");
+                }
+            });
+        });
+    });
+</script>
+
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.metisMenu.js"></script>
+<script src="js/jquery.slimscroll.min.js"></script>
+<script src="js/inspinia.js"></script>
+<script src="js/pace.min.js"></script>
+
+</body>
+
+</html>
