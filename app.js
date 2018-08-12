@@ -104,7 +104,7 @@ app.post("/doVisitorNum", router.doVisitorNum);
 app.post("/addThumbsUp", router.addThumbsUp);
 app.post("/doThumbsUp", router.doThumbsUp);
 
-console.log("Server running");
+console.log("Server running ...");
 
 
 
