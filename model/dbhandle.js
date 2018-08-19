@@ -1,4 +1,4 @@
-var MongoClient = require('mongodb').MongoClient;
+﻿var MongoClient = require('mongodb').MongoClient;
 var DB_CONN_STR = 'mongodb://admin:cbh123456@localhost:27017/jijin';
 var DB_LIST_STR='jijin';
 
