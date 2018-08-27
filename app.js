@@ -95,7 +95,7 @@ app.get("/modify", router.showModify);
 app.post("/update", router.updateArticle);
 
 app.get("/jijin", router.showJijin);
-
+app.get("/doDeleteJijin", router.deleteJijin);
 //VisitorNum(游览数)
 app.post("/addVisitorNum", router.addVisitorNum);
 app.post("/doVisitorNum", router.doVisitorNum);

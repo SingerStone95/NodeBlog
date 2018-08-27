@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
 <html>
+
 <head>
     <title>基金-路漫漫其修远兮，吾将上下而求索</title>
     <link href="../css/bootstrap.css" rel='stylesheet' type='text/css' />
@@ -22,6 +23,7 @@
     <script src="http://cdn.hcharts.cn/highcharts/highcharts.js"></script>
 
 </head>
+
 <body>
     <!-- header -->
     <div class="col-md-2 sidebar">
@@ -39,95 +41,115 @@
         <div class="drop-navigation">
             <div class="top-menu">
                 <ul>
-                  <li class="/"><a href="/">主页</a></li>
-                  <li><a href="/ReactNative">ReactNative</a></li>
-                  <li><a href="/NodeJS">NodeJS</a></li>
-                  <li><a href="/Android">Android</a></li>
-                  <li><a href="/writeAvr">随记</a></li>
-                  <li><a href="/jijin">基金</a></li>
-                  <li><a href="/login">登录到管理页</a></li>
-                  <li><a href="/About">关于我</a></li>
-                  <li><a href="/comment">留言</a></li>
-              </ul>
-          </div>
-          <!-- script-for-menu -->
-          <script>
-            $( ".top-navigation" ).click(function() {
-                $( ".drop-navigation" ).slideToggle( 300, function() {
-                    // Animation complete.
+                    <li class="/"><a href="/">主页</a></li>
+                    <li><a href="/ReactNative">ReactNative</a></li>
+                    <li><a href="/NodeJS">NodeJS</a></li>
+                    <li><a href="/Android">Android</a></li>
+                    <li><a href="/writeAvr">随记</a></li>
+                    <li><a href="/jijin">基金</a></li>
+                    <li><a href="/login">登录到管理页</a></li>
+                    <li><a href="/About">关于我</a></li>
+                    <li><a href="/comment">留言</a></li>
+                </ul>
+            </div>
+            <!-- script-for-menu -->
+            <script>
+                $(".top-navigation").click(function () {
+                    $(".drop-navigation").slideToggle(300, function () {
+                        // Animation complete.
+                    });
                 });
-            });
-        </script>
-        <div class="side-btm">
-            <div class="copyright">
-                <p>Design by SingerStone</p>
-                <p>Copyright &copy; 2016.SingerStone All rights reserved.</p>
+            </script>
+            <div class="side-btm">
+                <div class="copyright">
+                    <p>Design by SingerStone</p>
+                    <p>Copyright &copy; 2016.SingerStone All rights reserved.</p>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="col-sm-10 col-sm-offset-3 col-md-10 col-md-offset-2">
-   <div>
-    <div class="col-sm-12">
-        <nav>
-            <ul id="chart_list">
-            </ul>
-        </nav>
+    <div class="col-sm-10 col-sm-offset-3 col-md-10 col-md-offset-2">
+        <div>
+            <div class="col-sm-12">
+                <nav>
+                    <ul class='list-group' id="chart_list">
+                    </ul>
+                </nav>
+            </div>
+            <div class="message"></div>
+        </div>
     </div>
-    <div class="message"></div>
-</div>
-</div>
-<div class="clearfix"></div>
-<script type="text/javascript">
-    function getOptions(datas){
-        var x=new Array();
-        var y=new Array();
-        for (var i=0;i<datas.length;i++){
-            x[i]=datas[i].time;
-            var yString=datas[i].ratio;
-            var yFloat = parseFloat(yString.split(' ')[1].split('%')[0]);
-            y[i]=yFloat;
-        }
-  // 图表配置
-  var options = {
-    chart: {
-                type: 'column'                          //指定图表的类型，默认是折线图（line）
-            },
-            title: {
-                text: "增长趋势图"                 // 标题
-            },
-            xAxis: {
-                categories:x   // x 轴分类
-            },
-            yAxis: {
-                title: {
-                    text: '增长率'                // y 轴标题
+    <div class="clearfix"></div>
+    <script type="text/javascript">
+        function getOptions(datas) {
+            var x = new Array();
+            var y = new Array();
+            for (var i = 0; i < datas.length; i++) {
+                x[i] = datas[i].time;
+                var yString = datas[i].ratio;
+                var yFloat = parseFloat(yString.split(' ')[1].split('%')[0]);
+                y[i] = yFloat;
+            }
+            // 图表配置
+            var options = {
+                chart: {
+                    type: 'column'                          //指定图表的类型，默认是折线图（line）
                 },
-                plotLines: [{
-                 value: 0,
-                 width: 1,
-                 color: '#808080'
-             }]
-         },
-         series: [{  
-           color: '#ff0000',  
-                negativeColor: '#00ff00',                          // 数据列
-                name: datas[0].name,                        // 数据列名
-                data: y                     // 数据
-            }]
-        };
-        return options;
-    }
-    
-    var datas=JSON.parse(JSON.stringify(<%- allResult%>));
+                title: {
+                    text: datas[0].name+"增长趋势图"                 // 标题
+                },
+                xAxis: {
+                    categories: x   // x 轴分类
+                },
+                yAxis: {
+                    title: {
+                        text: '增长率'                // y 轴标题
+                    },
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        color: '#808080'
+                    }]
+                },
+                series: [{
+                    color: '#ff0000',
+                    negativeColor: '#00ff00',                          // 数据列
+                    name: datas[0].name,                        // 数据列名
+                    data: y                     // 数据
+                }]
+            };
+            return options;
+        }
+
+        var datas = JSON.parse(JSON.stringify(<%-allResult %>));
+
         // 图表初始化函数
-        for(i=0;i<datas.length;i++){
-            console.log(datas[i]);
-            var options=getOptions(datas[i]);
-             $("#chart_list").append("<li id='chart"+i+"' style='min-width:400px;height:400px'></li>");
-            Highcharts.chart('chart'+i, options);
+        for (i = 0; i < datas.length; i++) {
+            var options = getOptions(datas[i]);
+            $("#chart_list").append("<li id='chart" + i + "' style='min-width:400px;height:400px'></li>");
+            $("#chart_list").append("<input class='form-control' type='password' id='password" + i + "' placeholder='输入操作密码'></input>")
+            $("#chart_list").append("<input type='button'  class='btn btn-warning' id='button" + i + "' value='不再关注'></input></br></br>")
+            $("#button" + i).on("click", { code: datas[i][0].code,index:i }, function (event) {
+                //alert(event.data.index)
+                var psd=$("#password"+event.data.index)
+                //alert(psd.val())
+                //console.log("code:" + event.data.code+" password:"+psd)
+                // $.post("/doDeleteJijin", {"code":"123"}, function (result) {
+                //     alert(result.result)
+                // });
+                $.get("/doDeleteJijin?code=" + event.data.code+"&password="+psd.val(), function (result) {
+                    if (result.result == 0) {
+                        alert('删除成功')
+                        location.reload()
+                    } else {
+                        alert('删除失败')
+                    }
+                });
+            });
+            Highcharts.chart('chart' + i, options);
         }
     </script>
 </body>
+
 </html>

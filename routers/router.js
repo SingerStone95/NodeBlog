@@ -434,6 +434,27 @@ exports.showJijin = function (req, res) {
         });
     });
 };
+exports.deleteJijin = function (req, res) {
+    console.log(req.query.code+"  "+req.query.password)
+    // if (req.body.code == undefined) {
+    //     res.send({ result: 1 });
+    //     return;
+    // }
+    if (req.query.code == undefined||req.query.password!='cbh123456') {
+        res.send({ result: 1 });
+        return;
+    }
+
+    dbhandle.deleteData({ "code": req.query.code }, function (result) {
+        var r= JSON.parse(JSON.stringify(result));
+        if (r.ok == 1) {
+            res.send({ result: 0 });
+        }else{
+            res.send({ result: 1 });
+        }
+    });
+
+}
 exports.doComment = function (req, res) {
     var form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, files) {
