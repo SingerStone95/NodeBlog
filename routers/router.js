@@ -2,7 +2,7 @@ var formidable = require("formidable");
 var db = require("../model/db.js");
 var dbhandle = require("../model/dbhandle.js");
 var md5 = require("../model/md5.js");
-var fs = require("fs");
+var jijinfile = require("../model/filehandle.js");
 var moment = require("moment");
 var MongoClient = require("mongodb").MongoClient,
     test = require("assert");
@@ -435,25 +435,35 @@ exports.showJijin = function (req, res) {
     });
 };
 exports.deleteJijin = function (req, res) {
-    console.log(req.query.code+"  "+req.query.password)
+    console.log(req.query.code + "  " + req.query.password)
     // if (req.body.code == undefined) {
     //     res.send({ result: 1 });
     //     return;
     // }
-    if (req.query.code == undefined||req.query.password!='cbh123456') {
+    if (req.query.code == undefined || req.query.password != 'cbh123456') {
         res.send({ result: 1 });
         return;
     }
-
+    jijinfile.removeJijin(req.query.code)
     dbhandle.deleteData({ "code": req.query.code }, function (result) {
-        var r= JSON.parse(JSON.stringify(result));
+        var r = JSON.parse(JSON.stringify(result));
         if (r.ok == 1) {
             res.send({ result: 0 });
-        }else{
+        } else {
             res.send({ result: 1 });
         }
     });
 
+}
+exports.addJijin = function (req, res) {
+    var code = req.body.code
+    var password = req.body.password
+    if (password == 'cbh123456') {
+        jijinfile.addJijin(parseInt(code))
+        res.send({ result: 0 });
+    } else {
+        res.send({ result: 1 });
+    }
 }
 exports.doComment = function (req, res) {
     var form = new formidable.IncomingForm();

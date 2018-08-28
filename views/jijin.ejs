@@ -73,7 +73,12 @@
         <div>
             <div class="col-sm-12">
                 <nav>
-                    <ul class='list-group' id="chart_list">
+                    <form role="form" style="margin-top: 40px;">
+                        <input class='form-control' type='text' id='code' placeholder='输入基金代码' />
+                        <input class='form-control' type='password' id='password' placeholder='输入操作密码' />
+                        <input type='button' class='btn btn-warning' id='addFocus' value='添加关注' />
+                    </form>
+                    <ul class='list-group' id="chart_list" style="margin-top: 60px;">
                     </ul>
                 </nav>
             </div>
@@ -97,7 +102,7 @@
                     type: 'column'                          //指定图表的类型，默认是折线图（line）
                 },
                 title: {
-                    text: datas[0].name+"增长趋势图"                 // 标题
+                    text: datas[0].name + "增长趋势图"                 // 标题
                 },
                 xAxis: {
                     categories: x   // x 轴分类
@@ -130,15 +135,15 @@
             $("#chart_list").append("<li id='chart" + i + "' style='min-width:400px;height:400px'></li>");
             $("#chart_list").append("<input class='form-control' type='password' id='password" + i + "' placeholder='输入操作密码'></input>")
             $("#chart_list").append("<input type='button'  class='btn btn-warning' id='button" + i + "' value='不再关注'></input></br></br>")
-            $("#button" + i).on("click", { code: datas[i][0].code,index:i }, function (event) {
+            $("#button" + i).on("click", { code: datas[i][0].code, index: i }, function (event) {
                 //alert(event.data.index)
-                var psd=$("#password"+event.data.index)
+                var psd = $("#password" + event.data.index)
                 //alert(psd.val())
                 //console.log("code:" + event.data.code+" password:"+psd)
                 // $.post("/doDeleteJijin", {"code":"123"}, function (result) {
                 //     alert(result.result)
                 // });
-                $.get("/doDeleteJijin?code=" + event.data.code+"&password="+psd.val(), function (result) {
+                $.get("/doDeleteJijin?code=" + event.data.code + "&password=" + psd.val(), function (result) {
                     if (result.result == 0) {
                         alert('删除成功')
                         location.reload()
@@ -149,6 +154,20 @@
             });
             Highcharts.chart('chart' + i, options);
         }
+        $(document).ready(function () {
+            $("#addFocus").click(function () {
+                var code = $("#code").val();
+                var password = $("#password").val();
+                $.post('/doAddJijin', { code: code, password: password }, function (result) {
+                    if (result.result == 0) {
+                        alert('添加关注成功')
+                    } else {
+                        alert('添加关注失败')
+                    }
+                }, 'json')
+
+            });
+        });
     </script>
 </body>
 

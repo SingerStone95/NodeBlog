@@ -23,7 +23,7 @@ app.use(session({
 }));
 
 app.use(bodyParser.json());
-
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("./public"));
 app.use('/cdn', express.static('./cdn'));
 
@@ -96,6 +96,7 @@ app.post("/update", router.updateArticle);
 
 app.get("/jijin", router.showJijin);
 app.get("/doDeleteJijin", router.deleteJijin);
+app.post("/doAddJijin",router.addJijin)
 //VisitorNum(游览数)
 app.post("/addVisitorNum", router.addVisitorNum);
 app.post("/doVisitorNum", router.doVisitorNum);
