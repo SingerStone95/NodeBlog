@@ -224,27 +224,29 @@ exports.showRegister = function (req, res) {
 exports.doRegister = function (req, res) {
     //得到用户填写的东西
     var form = new formidable.IncomingForm();
-    form.parse(req, function (err, fields, files) {
-        //得到表单之后做的事情
-        var username = fields.username;
-        var password = fields.password;
-        var md5PassWord = md5(md5(password).substr(4, 7) + md5(password));
-        db.insertOne(
-            "user",
-            {
-                username: username,
-                password: md5PassWord
-            },
-            function (err, result) {
-                if (err) {
-                    res.send("-3"); //服务器错误
-                    return;
-                }
-                req.session.login = "1";
-                res.send("1"); //注册成功，写入SESSION
+
+    //得到表单之后做的事情
+    console.log("go to there!")
+    var username = req.body.username;
+    var password = req.body.password;
+    var md5PassWord = md5(md5(password).substr(4, 7) + md5(password));
+    console.log("go to there!")
+    db.insertOne(
+        "user",
+        {
+            username: username,
+            password: md5PassWord
+        },
+        function (err, result) {
+            if (err) {
+                res.send("-3"); //服务器错误
+                return;
             }
-        );
-    });
+            req.session.login = "1";
+            res.send("1"); //注册成功，写入SESSION
+        }
+    );
+
 };
 
 //登陆页面

@@ -47,9 +47,9 @@ app.post("/getDetail", router.doShowArticle)
 //删除文章
 app.post("/delArticle", router.delArticle);
 
-/*//注册页面
-app.get("/register", router.showRegister);
-app.post("/doRegister",router.doRegister);*/
+//注册页面
+// app.get("/register", router.showRegister);
+// app.post("/doRegister",router.doRegister);
 
 //登陆页面
 app.get("/login", router.showLogin);
@@ -116,4 +116,4 @@ console.log("Server running ...");
 //https监听3000端口
 httpsServer.listen(3000);
 //http监听3001端口
-httpServer.listen(80);
+//httpServer.listen(80);
