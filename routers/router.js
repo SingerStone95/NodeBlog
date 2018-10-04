@@ -24,34 +24,33 @@ exports.doRecording = function (req, res) {
         res.send("<a href=" + "/login" + ">点击前往登录页面</a>");
         return;
     }
-    var form = new formidable.IncomingForm();
 
-    form.parse(req, function (err, fields) {
-        db.getAllCount("article", function (count) {
-            var allCount = count.toString();
-            var date = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
-            //写入数据库
-            db.insertOne(
-                "article",
-                {
-                    ID: parseInt(allCount) + 1,
-                    topic: fields.topic,
-                    publisher: fields.publisher,
-                    classify: fields.classify,
-                    content: fields.content,
-                    date: date,
-                    thumbsUp: 0,
-                    visitNum: 0
-                },
-                function (err, result) {
-                    if (err) {
-                        res.send("-1");
-                        return;
-                    }
-                    res.send("1");
+
+
+    db.getAllCount("article", function (count) {
+        var allCount = count.toString();
+        var date = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
+        //写入数据库
+        db.insertOne(
+            "article",
+            {
+                ID: parseInt(allCount) + 1,
+                topic: req.body.topic,
+                publisher: req.body.publisher,
+                classify: req.body.classify,
+                content: req.body.content,
+                date: date,
+                thumbsUp: 0,
+                visitNum: 0
+            },
+            function (err, result) {
+                if (err) {
+                    res.send("-1");
+                    return;
                 }
-            );
-        });
+                res.send("1");
+            }
+        );
     });
 };
 exports.doWrite = function (req, res) {
@@ -266,34 +265,33 @@ exports.unLogin = function (req, res) {
 //执行登陆
 exports.doLogin = function (req, res) {
     //得到用户填写的东西
-    var form = new formidable.IncomingForm();
 
-    form.parse(req, function (err, fields, files) {
-        var username = fields.username;
-        var password = fields.password;
-        password = md5(md5(password).substr(4, 7) + md5(password));
 
-        //检索数据库，按登录名检索数据库，查看密码是否匹配
-        db.find("user", { username: username }, function (err, result) {
-            if (err) {
-                res.send("-3"); //服务器错误
-                return;
-            }
-            if (result.length == 0) {
-                res.send("-1"); //-2没有这个人
-                return;
-            }
-            var dbpassword = result[0].password;
-            //要对用户这次输入的密码，进行相同的加密操作。然后与
-            //数据库中的密码进行比对
-            if (password == dbpassword) {
-                req.session.login = "1";
-                res.send("1"); //登陆成功
-                return;
-            } else {
-                res.send("-2"); //密码不匹配
-            }
-        });
+
+    var username = req.body.username;
+    var password = req.body.password;
+    password = md5(md5(password).substr(4, 7) + md5(password));
+
+    //检索数据库，按登录名检索数据库，查看密码是否匹配
+    db.find("user", { username: username }, function (err, result) {
+        if (err) {
+            res.send("-3"); //服务器错误
+            return;
+        }
+        if (result.length == 0) {
+            res.send("-1"); //-2没有这个人
+            return;
+        }
+        var dbpassword = result[0].password;
+        //要对用户这次输入的密码，进行相同的加密操作。然后与
+        //数据库中的密码进行比对
+        if (password == dbpassword) {
+            req.session.login = "1";
+            res.send("1"); //登陆成功
+            return;
+        } else {
+            res.send("-2"); //密码不匹配
+        }
     });
 
     return;
@@ -468,32 +466,31 @@ exports.addJijin = function (req, res) {
     }
 }
 exports.doComment = function (req, res) {
-    var form = new formidable.IncomingForm();
-    form.parse(req, function (err, fields, files) {
-        var name = fields.name;
-        var email = fields.email;
-        var content = fields.content;
-        db.getAllCount("article", function (count) {
-            var allCount = count.toString();
-            var date = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
-            db.insertOne(
-                "comment",
-                {
-                    ID: parseInt(allCount) + 1,
-                    name: name,
-                    email: email,
-                    content: content,
-                    date: date
-                },
-                function (err, result) {
-                    if (err) {
-                        console.log("留言错误" + err);
-                        return;
-                    }
-                    res.send("1");
+
+
+    var name = req.body.name;
+    var email = req.body.email;
+    var content = req.body.content;
+    db.getAllCount("article", function (count) {
+        var allCount = count.toString();
+        var date = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
+        db.insertOne(
+            "comment",
+            {
+                ID: parseInt(allCount) + 1,
+                name: name,
+                email: email,
+                content: content,
+                date: date
+            },
+            function (err, result) {
+                if (err) {
+                    console.log("留言错误" + err);
+                    return;
                 }
-            );
-        });
+                res.send("1");
+            }
+        );
     });
 };
 //取得评论
@@ -530,28 +527,26 @@ exports.getManage = function (req, res) {
 
 //addVisitorNum!
 exports.addVisitorNum = function (req, res) {
-    var form = new formidable.IncomingForm();
-    form.parse(req, function (err, fields, files) {
-        var aId = parseInt(fields.ID);
-        db.find("article", { ID: aId }, function (err, result) {
-            if (err) {
-                console.log(err);
-            }
-            var visitNum = result[0].visitNum;
-            var ID = result[0].ID;
-            db.updateMany(
-                "article",
-                { ID: ID },
-                { $set: { visitNum: visitNum + 1 } },
-                function (err, results) {
-                    if (err) {
-                        console.log("游览数据错误:" + err);
-                        return;
-                    }
-                    res.send("1");
+
+    var aId = parseInt(req.body.ID);
+    db.find("article", { ID: aId }, function (err, result) {
+        if (err) {
+            console.log(err);
+        }
+        var visitNum = result[0].visitNum;
+        var ID = result[0].ID;
+        db.updateMany(
+            "article",
+            { ID: ID },
+            { $set: { visitNum: visitNum + 1 } },
+            function (err, results) {
+                if (err) {
+                    console.log("游览数据错误:" + err);
+                    return;
                 }
-            );
-        });
+                res.send("1");
+            }
+        );
     });
 };
 
@@ -586,28 +581,26 @@ exports.doVisitorNum = function (req, res) {
 
 //addThumbsUp!
 exports.addThumbsUp = function (req, res) {
-    var form = new formidable.IncomingForm();
-    form.parse(req, function (err, fields, files) {
-        var aId = parseInt(fields.ID);
-        db.find("article", { ID: aId }, function (err, result) {
-            if (err) {
-                console.log(err);
-            }
-            var thumbsUp = result[0].thumbsUp;
-            var ID = result[0].ID;
-            db.updateMany(
-                "article",
-                { ID: ID },
-                { $set: { thumbsUp: thumbsUp + 1 } },
-                function (err, results) {
-                    if (err) {
-                        console.log("点赞数据错误:" + err);
-                        return;
-                    }
-                    res.send("1");
+
+    var aId = parseInt(req.body.ID);
+    db.find("article", { ID: aId }, function (err, result) {
+        if (err) {
+            console.log(err);
+        }
+        var thumbsUp = result[0].thumbsUp;
+        var ID = result[0].ID;
+        db.updateMany(
+            "article",
+            { ID: ID },
+            { $set: { thumbsUp: thumbsUp + 1 } },
+            function (err, results) {
+                if (err) {
+                    console.log("点赞数据错误:" + err);
+                    return;
                 }
-            );
-        });
+                res.send("1");
+            }
+        );
     });
 };
 
