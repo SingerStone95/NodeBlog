@@ -24,9 +24,6 @@ exports.doRecording = function (req, res) {
         res.send("<a href=" + "/login" + ">点击前往登录页面</a>");
         return;
     }
-
-
-
     db.getAllCount("article", function (count) {
         var allCount = count.toString();
         var date = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
@@ -92,33 +89,32 @@ exports.updateArticle = function (req, res) {
         res.send("<a href=" + "/login" + ">点击前往登录页面</a>");
         return;
     }
-    var form = new formidable.IncomingForm();
-    form.parse(req, function (err, fields) {
-        var date = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
-        //写入数据库
-        db.updateMany(
-            "article",
-            { ID: parseInt(fields.ID) },
-            {
-                ID: parseInt(fields.ID),
-                topic: fields.topic,
-                publisher: fields.publisher,
-                classify: fields.classify,
-                content: fields.content,
-                date: date,
-                thumbsUp: parseInt(fields.thumbsUp),
-                visitNum: parseInt(fields.visitNum)
-            },
-            function (err, result) {
-                if (err) {
-                    console.log(err);
-                    res.send("-1");
-                    return;
-                }
-                res.send("1");
+
+    var date = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
+    //写入数据库
+    db.updateMany(
+        "article",
+        { ID: parseInt(req.body.ID) },
+        {
+            ID: parseInt(req.body.ID),
+            topic: req.body.topic,
+            publisher: req.body.publisher,
+            classify: req.body.classify,
+            content: req.body.content,
+            date: date,
+            thumbsUp: parseInt(req.body.thumbsUp),
+            visitNum: parseInt(req.body.visitNum)
+        },
+        function (err, result) {
+            if (err) {
+                console.log(err);
+                res.send("-1");
+                return;
             }
-        );
-    });
+            res.send("1");
+        }
+    );
+
 };
 
 //取得文章
@@ -182,17 +178,15 @@ exports.delArticle = function (req, res) {
         res.send("<a href=" + "/login" + ">点击前往登录页面</a>");
         return;
     }
-    var form = new formidable.IncomingForm();
-    form.parse(req, function (err, fields, files) {
-        var ID = parseInt(fields.ID);
-        db.deleteMany("article", { ID: ID }, function (err, results) {
-            if (err) {
-                console.log("删除文章错误:" + err);
-                return;
-            }
-            res.send("1");
-        });
+    var ID = parseInt(req.body.ID);
+    db.deleteMany("article", { ID: ID }, function (err, results) {
+        if (err) {
+            console.log("删除文章错误:" + err);
+            return;
+        }
+        res.send("1");
     });
+
 };
 
 //打开修改界面
@@ -221,11 +215,6 @@ exports.showRegister = function (req, res) {
 };
 //执行注册
 exports.doRegister = function (req, res) {
-    //得到用户填写的东西
-    var form = new formidable.IncomingForm();
-
-    //得到表单之后做的事情
-    console.log("go to there!")
     var username = req.body.username;
     var password = req.body.password;
     var md5PassWord = md5(md5(password).substr(4, 7) + md5(password));
@@ -245,7 +234,6 @@ exports.doRegister = function (req, res) {
             res.send("1"); //注册成功，写入SESSION
         }
     );
-
 };
 
 //登陆页面
