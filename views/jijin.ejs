@@ -93,7 +93,13 @@
             for (var i = 0; i < datas.length; i++) {
                 x[i] = datas[i].time;
                 var yString = datas[i].ratio;
-                var yFloat = parseFloat(yString.split(' ')[1].split('%')[0]);
+                var yFloat=0.0;
+                if (yString == undefined || yString == '') {
+                    yFloat = 0.0;
+                } else {
+                    yFloat = parseFloat(yString.split(' ')[1].split('%')[0]);
+                }
+               //var yFloat = parseFloat(yString.split(' ')[1].split('%')[0]);
                 y[i] = yFloat;
             }
             // 图表配置

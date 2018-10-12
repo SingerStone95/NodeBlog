@@ -401,7 +401,6 @@ exports.showJijin = function (req, res) {
                 keyIndex++;
             }
         }
-        console.log(keys);
         var allResult = [];
         //构造JSON
         for (i = 0; i < keys.length; i++) {
@@ -415,8 +414,8 @@ exports.showJijin = function (req, res) {
             }
             allResult[i] = itemArray;
         }
+        console.log('渲染的数据：');
         console.log(allResult);
-
         res.render("jijin", {
             allResult: JSON.stringify(allResult)
         });
