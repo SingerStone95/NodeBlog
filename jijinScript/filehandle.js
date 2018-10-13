@@ -2,8 +2,8 @@
  * 处理基金配置文件数据
  */
 var fs = require("fs")
-const configFileName = "./jijinconfig.json"
-var configDir = ''
+const configFileName = "/jijinconfig.json"
+var configDir = './jijinScript'
 
 exports.addJijin = function (code) {
     // 异步读取
@@ -17,7 +17,7 @@ exports.addJijin = function (code) {
             console.log('read file error!  ' + err)
             return
         }
-        var codes = JSON.parse(data.toString());
+        var codes = JSON.parse(data.toString()).jijinList;
         var isExsist = false
         for (var i = 0; i < codes.length; i++) {
             console.log(codes[i])
@@ -30,7 +30,9 @@ exports.addJijin = function (code) {
         if (!isExsist) {
             codes.push(code);
         }
-        fs.writeFile(filePath, JSON.stringify(codes), function (err) {
+        var config={};
+        config.jijinList=codes;
+        fs.writeFile(filePath, JSON.stringify(config), function (err) {
             if (err) {
                 console.log('write error! ' + err)
                 return
@@ -55,7 +57,7 @@ exports.removeJijin = function (code) {
             console.log('read file error!  ' + err)
             return
         }
-        var codes = JSON.parse(data.toString());
+        var codes = JSON.parse(data.toString()).jijinList;
         //把数据读出来删除
         for (var i = 0; i < codes.length; i++) {
             if (code == codes[i]) {
@@ -63,7 +65,9 @@ exports.removeJijin = function (code) {
                 console.log('remove success!')
             }
         }
-        fs.writeFile(filePath, JSON.stringify(codes), function (err) {
+        var config={};
+        config.jijinList=codes;
+        fs.writeFile(filePath, JSON.stringify(config), function (err) {
             if (err) {
                 console.log('write error! ' + err)
                 return

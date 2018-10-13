@@ -19,16 +19,15 @@ function task() {
 				url: url,
 				method: "POST",
 				json: true,
-				proxy: 'http://127.0.0.1:8080',
+				//proxy: 'http://127.0.0.1:8080',
 				headers: {
 					"content-type": "application/json"
 				},
 
 			}, function (error, response, body) {
-				console.log(body);
 				if (!error && response.statusCode == 200) {
 					var itemUrl = 'http://www.howbuy.com/fund/' + code + '/';
-					console.log(itemUrl);
+					console.log(itemUrl+'\n'+body+'\n');
 					request(itemUrl, function (err, result) {
 						if (err) {
 							var json = { 'code': code, 'data': body, 'data2': result.body };
@@ -78,17 +77,26 @@ function task() {
 					var ratio = $('.con_ratio_red').text();
 					if (!ratio) {
 						ratio = $('.con_ratio_green').text();
-					}
+					}			
 					var time = $('.tips_icon_con').text();
 					var imgdata = $('#valuationTime').attr('value');
 					var imageUrl = 'https://static.howbuy.com/images/fund/valuation/' + code + '_' + imgdata + '.png';
 					$ = cheerio.load(item.data2);
 					var name = $('.lt').find('h1').text().trim();
 					var up = $('.b-3').find('em').text().trim().split('%')[0] + '%';
+					if(ratio==''||ratio==undefined){
+						ratio='0.00 '+up;
+					}
 					var rank = $('.b-3').find('em').text().trim().split('%')[1];
 					var threeMouth = $('.clearfix .point .cRed').text().trim().split("%")[0] + '%';
+					if(threeMouth=='%'||threeMouth==undefined){
+						threeMouth = $('.clearfix .point .cGreen').text().trim().split("%")[0] + '%';
+					}
 					var oneYear = $('.clearfix .point .cRed').text().trim().split("%")[1] + '%'
-					//console.log(name +'\n'+up+'\n'+rank+'\n'+threeMouth+'\n'+oneYear+'\n');
+					if(oneYear=='%'||oneYear==undefined){
+						oneYear = $('.clearfix .point .cGreen').text().trim().split("%")[1] + '%'	
+					}
+					console.log('\n解析到的html数据:\nname:'+name +'\nup:'+up+'\nrank:'+rank+'\nthreeMouth:'+threeMouth+'\noneYear:'+oneYear+'\nratio:'+ratio+'\n');
 					//数据都拿到了,开始拼接邮件
 					var emailContentitem = '<h3 style="background-color:yellow">' + name + '</h3>' +
 						'<img src="' + imageUrl + '"/>' +
@@ -98,7 +106,7 @@ function task() {
 						'<a href="http://www.howbuy.com/fund/' + item.code + '">基金详情链接</a>' +
 						'<h6>更新时间:' + time + '</h6><Br/>';
 					emailContent += emailContentitem;
-					console.log("处理数据...");
+					console.log("保存数据...");
 					//判断重复数据
 					var dayTime = time.substring(2, 11).split(' ')[0];
 					saveDataIfNeed(dayTime, code, ratio, name);
@@ -106,7 +114,7 @@ function task() {
 					console.log('数据异常');
 				}
 			}
-			console.log(emailContent);
+			console.log('发送的邮件信息:\n'+emailContent);
 			var addrs = new Array();
 			//配置邮箱
 			addrs[0] = '<445191096@qq.com>';
@@ -122,12 +130,12 @@ function task() {
 			if (findResult.length > 0) {
 				console.log("重复数据，直接更新");
 				db.updateDate({ 'time': dayTime, 'code': code }, saveData, function (result) {
-					console.log(result);
+					//console.log(result);
 				});
 			} else {
 				console.log("无重复数据，第一次保存");
 				db.saveData(saveData, function (result) {
-					console.log(result);
+					//console.log(result);
 				});
 			}
 
