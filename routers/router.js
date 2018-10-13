@@ -431,9 +431,10 @@ exports.deleteJijin = function (req, res) {
         res.send({ result: 1 });
         return;
     }
-    jijinfile.removeJijin(req.query.code)
-    dbhandle.deleteData({ "code": req.query.code }, function (result) {
+    jijinfile.removeJijin(req.query.code);
+    dbhandle.deleteData({ "code": parseInt(req.query.code) }, function (result) {
         var r = JSON.parse(JSON.stringify(result));
+        console.log(result);
         if (r.ok == 1) {
             res.send({ result: 0 });
         } else {

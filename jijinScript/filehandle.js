@@ -2,8 +2,8 @@
  * 处理基金配置文件数据
  */
 var fs = require("fs")
-const configFileName = "/jijinconfig.json"
-var configDir = './jijinScript'
+const configFileName =__dirname+"/jijinconfig.json"
+
 
 exports.addJijin = function (code) {
     // 异步读取
@@ -11,7 +11,7 @@ exports.addJijin = function (code) {
         console.log('code error');
         return
     }
-    var filePath = configDir + configFileName
+    var filePath = configFileName;
     fs.readFile(filePath, function (err, data) {
         if (err) {
             console.log('read file error!  ' + err)
@@ -51,7 +51,7 @@ exports.removeJijin = function (code) {
         console.log('code error');
         return
     }
-    var filePath = configDir + configFileName
+    var filePath =configFileName
     fs.readFile(filePath, function (err, data) {
         if (err) {
             console.log('read file error!  ' + err)
@@ -79,7 +79,7 @@ exports.removeJijin = function (code) {
 }
 
 exports.readJijin = function () {
-    var filePath = configDir + configFileName
+    var filePath =  configFileName
     var data = fs.readFileSync(filePath);
     return data
 }
