@@ -48,8 +48,8 @@ app.post("/getDetail", router.doShowArticle)
 app.post("/delArticle", router.delArticle);
 
 //注册页面
-// app.get("/register", router.showRegister);
-// app.post("/doRegister",router.doRegister);
+app.get("/register", router.showRegister);
+app.post("/doRegister",router.doRegister);
 
 //登陆页面
 app.get("/login", router.showLogin);

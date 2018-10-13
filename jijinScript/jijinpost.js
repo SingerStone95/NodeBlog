@@ -118,7 +118,7 @@ function task() {
 			var addrs = new Array();
 			//配置邮箱
 			addrs[0] = '<445191096@qq.com>';
-			//email.sendEmail(addrs, emailContent);
+			email.sendEmail(addrs, emailContent);
 
 		});
 
@@ -154,5 +154,5 @@ var main = function () {
 	});
 	//task();
 }
-//main();
-task();
+main();
+//task();
