@@ -89,12 +89,12 @@ function task() {
 					}
 					var rank = $('.b-3').find('em').text().trim().split('%')[1];
 					var threeMouth = $('.clearfix .point .cRed').text().trim().split("%")[0] + '%';
-					if(threeMouth=='%'||threeMouth==undefined){
+					if(threeMouth=='%'||threeMouth==undefined||threeMouth=='undefined%'){
 						threeMouth = $('.clearfix .point .cGreen').text().trim().split("%")[0] + '%';
 					}
-					var oneYear = $('.clearfix .point .cRed').text().trim().split("%")[1] + '%'
-					if(oneYear=='%'||oneYear==undefined){
-						oneYear = $('.clearfix .point .cGreen').text().trim().split("%")[1] + '%'	
+					var oneYear = $('.clearfix .point .cRed').text().trim().split("%")[1] + '%';
+					if(oneYear=='%'||oneYear==undefined||oneYear=='undefined%'){
+						oneYear = $('.clearfix .point .cGreen').text().trim().split("%")[1] + '%';
 					}
 					console.log('\n解析到的html数据:\nname:'+name +'\nup:'+up+'\nrank:'+rank+'\nthreeMouth:'+threeMouth+'\noneYear:'+oneYear+'\nratio:'+ratio+'\n');
 					//数据都拿到了,开始拼接邮件
@@ -118,7 +118,7 @@ function task() {
 			var addrs = new Array();
 			//配置邮箱
 			addrs[0] = '<445191096@qq.com>';
-			email.sendEmail(addrs, emailContent);
+			//email.sendEmail(addrs, emailContent);
 
 		});
 
@@ -154,5 +154,5 @@ var main = function () {
 	});
 	//task();
 }
-main();
-//task();
+//main();
+task();
