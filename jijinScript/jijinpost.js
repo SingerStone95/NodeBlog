@@ -26,28 +26,22 @@ function task() {
 
 			}, function (error, response, body) {
 				if (!error && response.statusCode == 200) {
-					var itemUrl = 'http://www.howbuy.com/fund/' + code + '/';
-					console.log(itemUrl+'\n'+body+'\n');
-					request(itemUrl, function (err, result) {
-						if (err) {
-							var json = { 'code': code, 'data': body, 'data2': result.body };
-							resolve(json);
-						} else {
-							var json = { 'code': code, 'data': body, 'data2': result.body };
-							resolve(json);
-						}
-					});
-
+					console.log("request success!");
 				} else {
-					console.log("requsest http://www.howbuy.com/fund/  error!");
-					var json = { 'code': code, 'data': null };
-					resolve(json);
+					console.log("request failed!");
 				}
+				var itemUrl = 'http://www.howbuy.com/fund/' + code + '/';
+				console.log(itemUrl + '\n' + body + '\n');
+				request(itemUrl, function (err, result) {
+					var json = { 'code': code, 'data': body, 'data2': result.body };
+					//console.log(json);
+					resolve(json);
+				});
 			});
 		});
 	}
 	let jijinConfig = JSON.parse(jijinfile.readJijin().toString())
-	let jijinArray=jijinConfig.jijinList;
+	let jijinArray = jijinConfig.jijinList;
 	console.log(jijinArray);
 	for (var i = jijinArray.length - 1; i >= 0; i--) {
 		var itemUrl = 'http://www.howbuy.com/fund/ajax/gmfund/valuation/valuationnav.htm?jjdm=' + jijinArray[i];
@@ -69,52 +63,63 @@ function task() {
 			for (var i = 0; i < res.length; i++) {
 				var item = res[i];
 				var code = item.code;
-				if (item.data != null && item.data2 != null) {
-					//console.log(item.data2);
-					//console.log(item.data);
+				//console.log(item.data2);
+				//console.log(item.data);
+				var value = '';
+				var ratio = '';
+				var time = '';
+				var imageUrl = '';
+				var name = '';
+				var up = '';
+				var rank = '';
+				var threeMouth = '';
+				var oneYear = '';
+				if (item.data != null) {
 					$ = cheerio.load(item.data);
-					var value = $('.con_value').text();
-					var ratio = $('.con_ratio_red').text();
+					value = $('.con_value').text();
+					ratio = $('.con_ratio_red').text();
 					if (!ratio) {
 						ratio = $('.con_ratio_green').text();
-					}			
-					var time = $('.tips_icon_con').text();
-					var imgdata = $('#valuationTime').attr('value');
-					var imageUrl = 'https://static.howbuy.com/images/fund/valuation/' + code + '_' + imgdata + '.png';
-					$ = cheerio.load(item.data2);
-					var name = $('.lt').find('h1').text().trim();
-					var up = $('.b-3').find('em').text().trim().split('%')[0] + '%';
-					if(ratio==''||ratio==undefined){
-						ratio='0.00 '+up;
 					}
-					var rank = $('.b-3').find('em').text().trim().split('%')[1];
-					var threeMouth = $('.clearfix .point .cRed').text().trim().split("%")[0] + '%';
-					if(threeMouth=='%'||threeMouth==undefined||threeMouth=='undefined%'){
+					time = $('.tips_icon_con').text();
+					var imgdata = $('#valuationTime').attr('value');
+					console.log(imgdata);
+					imageUrl = 'https://static.howbuy.com/images/fund/valuation/' + code + '_' + imgdata + '.png';
+				}
+				if (item.data2 != null && item.data2 != undefined) {
+					$ = cheerio.load(item.data2);
+					name = $('.lt').find('h1').text().trim();
+					up = $('.b-3').find('em').text().trim().split('%')[0] + '%';
+					if (ratio == '' || ratio == undefined) {
+						ratio = '0.00 ' + up;
+					}
+					rank = $('.b-3').find('em').text().trim().split('%')[1];
+					threeMouth = $('.clearfix .point .cRed').text().trim().split("%")[0] + '%';
+					if (threeMouth == '%' || threeMouth == undefined || threeMouth == 'undefined%') {
 						threeMouth = $('.clearfix .point .cGreen').text().trim().split("%")[0] + '%';
 					}
-					var oneYear = $('.clearfix .point .cRed').text().trim().split("%")[1] + '%';
-					if(oneYear=='%'||oneYear==undefined||oneYear=='undefined%'){
+					oneYear = $('.clearfix .point .cRed').text().trim().split("%")[1] + '%';
+					if (oneYear == '%' || oneYear == undefined || oneYear == 'undefined%') {
 						oneYear = $('.clearfix .point .cGreen').text().trim().split("%")[1] + '%';
 					}
-					console.log('\n解析到的html数据:\nname:'+name +'\nup:'+up+'\nrank:'+rank+'\nthreeMouth:'+threeMouth+'\noneYear:'+oneYear+'\nratio:'+ratio+'\n');
-					//数据都拿到了,开始拼接邮件
-					var emailContentitem = '<h3 style="background-color:yellow">' + name + '</h3>' +
-						'<img src="' + imageUrl + '"/>' +
-						getHtmlFromValue(ratio) +
-						'<h5>单位净值:' + value + '</h5>' +
-						'<h5>排名:' + rank + '      近三月:' + threeMouth + '      近一年:' + oneYear + '</h5>' +
-						'<a href="http://www.howbuy.com/fund/' + item.code + '">基金详情链接</a>' +
-						'<h6>更新时间:' + time + '</h6><Br/>';
-					emailContent += emailContentitem;
-					console.log("保存数据...");
-					//判断重复数据
-					var dayTime = time.substring(2, 11).split(' ')[0];
-					saveDataIfNeed(dayTime, code, ratio, name);
-				} else {
-					console.log('数据异常');
 				}
+				console.log('\n解析到的html数据:\nname:' + name + '\nup:' + up + '\nrank:' + rank + '\nthreeMouth:' + threeMouth + '\noneYear:' + oneYear + '\nratio:' + ratio + '\n');
+				//数据都拿到了,开始拼接邮件
+				var emailContentitem = '<h3 style="background-color:yellow">' + name + '</h3>' +
+					'<img src="' + imageUrl + '"/>' +
+					getHtmlFromValue(ratio) +
+					'<h5>单位净值:' + value + '</h5>' +
+					'<h5>排名:' + rank + '      近三月:' + threeMouth + '      近一年:' + oneYear + '</h5>' +
+					'<a href="http://www.howbuy.com/fund/' + item.code + '">基金详情链接</a>' +
+					'<h6>更新时间:' + time + '</h6><Br/>';
+				emailContent += emailContentitem;
+				console.log("保存数据...");
+				//判断重复数据
+				var dayTime = time.substring(2, 11).split(' ')[0];
+				saveDataIfNeed(dayTime, code, ratio, name);
+
 			}
-			console.log('发送的邮件信息:\n'+emailContent);
+			console.log('发送的邮件信息:\n' + emailContent);
 			var addrs = new Array();
 			//配置邮箱
 			addrs[0] = '<445191096@qq.com>';
