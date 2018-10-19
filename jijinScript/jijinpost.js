@@ -86,6 +86,16 @@ function task() {
 					console.log(imgdata);
 					imageUrl = 'https://static.howbuy.com/images/fund/valuation/' + code + '_' + imgdata + '.png';
 				}
+				if (time == '' || time == undefined) {
+					var date = new Date();
+					var month = date.getMonth() + 1;
+					var day = date.getDate();
+					var hour = date.getHours();
+					var minute = date.getMinutes();
+					time = ' [' + month + '-' + day + ' ' + hour + ':' + minute + ']';
+					
+				}
+				console.log(time);
 				if (item.data2 != null && item.data2 != undefined) {
 					$ = cheerio.load(item.data2);
 					name = $('.lt').find('h1').text().trim();
