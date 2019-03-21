@@ -1,4 +1,5 @@
 var request = require("request");
+const https = require('https');
 var schedule = require('node-schedule');
 var Promise = require('promise');
 const url_detail="https://news-at.zhihu.com/api/4/news/"
@@ -57,9 +58,21 @@ function task2(){
         "classify" : "writeAvr",
         "content" : "测试数据"
     };
+    var agentOptions;
+var agent;
+
+agentOptions = {
+  host: 'https://106.13.2.200'
+, port: '3000'
+, path: '/'
+, rejectUnauthorized: false
+};
+
+agent = new https.Agent(agentOptions);
     request({
         url: url_article,
         method: "POST",
+        agent: agent,
         json: true,
         body: requestData,
         //proxy: 'http://127.0.0.1:8080',
