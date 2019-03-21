@@ -20,10 +20,10 @@ exports.showRecording = function (req, res) {
 };
 
 exports.doRecording = function (req, res) {
-    if (req.session.login != "1") {
-        res.send("<a href=" + "/login" + ">点击前往登录页面</a>");
-        return;
-    }
+    // if (req.session.login != "1") {
+    //     res.send("<a href=" + "/login" + ">点击前往登录页面</a>");
+    //     return;
+    // }
     db.getAllCount("article", function (count) {
         var allCount = count.toString();
         var date = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
