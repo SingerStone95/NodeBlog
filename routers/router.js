@@ -24,6 +24,7 @@ exports.doRecording = function (req, res) {
     //     res.send("<a href=" + "/login" + ">点击前往登录页面</a>");
     //     return;
     // }
+    console.log("doRecording start!");
     db.getAllCount("article", function (count) {
         var allCount = count.toString();
         var date = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
