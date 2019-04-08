@@ -1,7 +1,6 @@
 var formidable = require("formidable");
 var db = require("../model/db.js");
 const { ObjectId } = require('mongodb');
-import { ObjectId} from 'mongodb';
 var dbhandle = require("../model/dbhandle.js");
 var md5 = require("../model/md5.js");
 var jijinfile = require("../jijinScript/filehandle.js");
