@@ -81,7 +81,7 @@
 <!---->
 <script type="text/template" id="allArticle">
     <div class="col-md-11 news-1">
-        <a href="/article?ID={{= ID }}"><h5>{{= topic }}</h5></a>
+        <a href="/article?ID={{= _id }}"><h5>{{= topic }}</h5></a>
         <h6>{{= date }}</h6>
         <div class="post-body">
             <p> {{= content.substring(0,200).replace(/<[^>]+>/g,"") }} </p>
@@ -94,7 +94,7 @@
                 </h5>-->
             <h6 class="post-footer">
                 分类：{{= classify }} <!--| 评论：未开放--> | 浏览：{{= visitNum }} | 点赞：{{= thumbsUp }} |
-                <a href="/article?ID={{= ID }}">阅读全文 ></a>
+                <a href="/article?ID={{= _id }}">阅读全文 ></a>
             </h6>
         </div>
     </div>

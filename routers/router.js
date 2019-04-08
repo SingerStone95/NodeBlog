@@ -25,32 +25,27 @@ exports.doRecording = function (req, res) {
     //     res.send("<a href=" + "/login" + ">点击前往登录页面</a>");
     //     return;
     // }
-    console.log("doRecording start!");
-    db.getAllCount("article", function (count) {
-        var allCount = count.toString();
-        var date = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
-        //写入数据库
-        db.insertOne(
-            "article",
-            {
-                ID: parseInt(allCount) + 1,
-                topic: req.body.topic,
-                publisher: req.body.publisher,
-                classify: req.body.classify,
-                content: req.body.content,
-                date: date,
-                thumbsUp: 0,
-                visitNum: 0
-            },
-            function (err, result) {
-                if (err) {
-                    res.send("-1");
-                    return;
-                }
-                res.send("1");
+    var date = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
+    //写入数据库
+    db.insertOne(
+        "article",
+        {
+            topic: req.body.topic,
+            publisher: req.body.publisher,
+            classify: req.body.classify,
+            content: req.body.content,
+            date: date,
+            thumbsUp: 0,
+            visitNum: 0
+        },
+        function (err, result) {
+            if (err) {
+                res.send("-1");
+                return;
             }
-        );
-    });
+            res.send("1");
+        }
+    );
 };
 exports.doWrite = function (req, res) {
     var fields = {};
@@ -147,7 +142,6 @@ exports.showArticle = function (req, res) {
         return;
     }
     var _id = req.query.ID;
-    console.log(_id);
     db.find("article", {_id: ObjectId(_id)}, function (err, result) {
         if (err) {
             console.log(err);
@@ -165,7 +159,7 @@ exports.doShowArticle = function (req, res) {
         return;
     }
     var _id = req.body.ID;
-    db.find("article", { _id: _id }, function (err, result) {
+    db.find("article", { _id: ObjectId(_id) }, function (err, result) {
         if (err) {
             console.log(err);
         }
