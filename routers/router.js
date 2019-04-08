@@ -145,8 +145,9 @@ exports.showArticle = function (req, res) {
         res.send("错误");
         return;
     }
-    var aId = parseInt(req.query.ID);
-    db.find("article", { ID: aId }, function (err, result) {
+    var _id = req.query.ID;
+
+    db.find("article", { _id: _id }, function (err, result) {
         if (err) {
             console.log(err);
         }
@@ -162,8 +163,8 @@ exports.doShowArticle = function (req, res) {
         res.send("错误");
         return;
     }
-    var aId = parseInt(req.body.ID);
-    db.find("article", { ID: aId }, function (err, result) {
+    var _id = req.body.ID;
+    db.find("article", { _id: _id }, function (err, result) {
         if (err) {
             console.log(err);
         }
