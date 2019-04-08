@@ -1,5 +1,6 @@
 var formidable = require("formidable");
 var db = require("../model/db.js");
+var mongodb=require('mongodb');
 var dbhandle = require("../model/dbhandle.js");
 var md5 = require("../model/md5.js");
 var jijinfile = require("../jijinScript/filehandle.js");
@@ -147,7 +148,7 @@ exports.showArticle = function (req, res) {
     }
     var _id = req.query.ID;
     console.log(_id);
-    db.find("article", { '_id':_id }, function (err, result) {
+    db.find("article", {_id: mongodb.Types.ObjectId(_id)}, function (err, result) {
         if (err) {
             console.log(err);
         }
