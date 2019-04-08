@@ -145,7 +145,7 @@ exports.showArticle = function (req, res) {
         res.send("错误");
         return;
     }
-    var _id = req.query.ID;
+    var _id = req.query.ID.toString();
 
     db.find("article", { _id: _id }, function (err, result) {
         if (err) {
