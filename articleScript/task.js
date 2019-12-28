@@ -5,7 +5,7 @@ var schedule = require('node-schedule');
 var Promise = require('promise');
 const url_detail = "https://news-at.zhihu.com/api/4/news/"
 const url = "https://news-at.zhihu.com/api/4/news/latest"
-const url_article = "https://106.13.2.200:3000/doRecording/"
+const url_article = "https://106.12.193.145:443/doRecording/"
 function task() {
     request(url, function (err, result) {
         var data = JSON.parse(result.body);
@@ -21,6 +21,7 @@ function task() {
                     "topic": body.title,
                     "publisher": "知乎日报",
                     "classify": "writeAvr",
+                    "visitNum":0,
                     "content": body.body
                 };
 

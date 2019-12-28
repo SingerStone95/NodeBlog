@@ -1,5 +1,5 @@
 ﻿var MongoClient = require('mongodb').MongoClient;
-var DB_CONN_STR = 'mongodb://localhost:27017/comment';
+var DB_CONN_STR = 'mongodb://admin:cbh123456@localhost:27017/comment';
 var DB_LIST_STR = 'jijin';
 
 //插入

@@ -91,9 +91,9 @@ exports.updateArticle = function (req, res) {
     //写入数据库
     db.updateMany(
         "article",
-        { ID: parseInt(req.body.ID) },
+        { ID: req.body.ID },
         {
-            ID: parseInt(req.body.ID),
+            ID: req.body.ID,
             topic: req.body.topic,
             publisher: req.body.publisher,
             classify: req.body.classify,
@@ -142,7 +142,7 @@ exports.showArticle = function (req, res) {
         return;
     }
     var _id = req.query.ID;
-    db.find("article", {_id: ObjectId(_id)}, function (err, result) {
+    db.find("article", { _id: ObjectId(_id) }, function (err, result) {
         if (err) {
             console.log(err);
         }
@@ -175,7 +175,7 @@ exports.delArticle = function (req, res) {
         res.send("<a href=" + "/login" + ">点击前往登录页面</a>");
         return;
     }
-    var ID = parseInt(req.body.ID);
+    var ID = req.body.ID;
     db.deleteMany("article", { ID: ID }, function (err, results) {
         if (err) {
             console.log("删除文章错误:" + err);
@@ -513,10 +513,11 @@ exports.getManage = function (req, res) {
 //addVisitorNum!
 exports.addVisitorNum = function (req, res) {
 
-    var aId = parseInt(req.body.ID);
+    var aId = req.body.ID;
     db.find("article", { ID: aId }, function (err, result) {
         if (err) {
             console.log(err);
+            return;
         }
         var visitNum = result[0].visitNum;
         var ID = result[0].ID;
@@ -540,7 +541,7 @@ exports.doVisitorNum = function (req, res) {
         res.send({ result: 1 });
         return;
     }
-    var aId = parseInt(req.body.ID);
+    var aId = req.body.ID;
     db.find("article", { ID: aId }, function (err, result) {
         if (err) {
             console.log(err);
@@ -567,7 +568,7 @@ exports.doVisitorNum = function (req, res) {
 //addThumbsUp!
 exports.addThumbsUp = function (req, res) {
 
-    var aId = parseInt(req.body.ID);
+    var aId = req.body.ID;
     db.find("article", { ID: aId }, function (err, result) {
         if (err) {
             console.log(err);
@@ -596,7 +597,7 @@ exports.doThumbsUp = function (req, res) {
         res.send({ result: 1 });
         return;
     }
-    var aId = parseInt(req.body.ID);
+    var aId = req.body.ID;
     db.find("article", { ID: aId }, function (err, result) {
         if (err) {
             console.log(err);
