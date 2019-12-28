@@ -88,12 +88,13 @@ exports.updateArticle = function (req, res) {
     }
 
     var date = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
+    var dbId = ObjectId(req.body.ID);
     //写入数据库
     db.updateMany(
         "article",
-        { ID: req.body.ID },
+        { _id: dbId },
         {
-            ID: req.body.ID,
+            _id: dbId,
             topic: req.body.topic,
             publisher: req.body.publisher,
             classify: req.body.classify,
@@ -141,8 +142,8 @@ exports.showArticle = function (req, res) {
         res.send("错误");
         return;
     }
-    var _id = req.query.ID;
-    db.find("article", { _id: ObjectId(_id) }, function (err, result) {
+    var dbId = ObjectId(req.query.ID);
+    db.find("article", { _id: dbId }, function (err, result) {
         if (err) {
             console.log(err);
         }
@@ -158,8 +159,8 @@ exports.doShowArticle = function (req, res) {
         res.send("错误");
         return;
     }
-    var _id = req.body.ID;
-    db.find("article", { _id: ObjectId(_id) }, function (err, result) {
+    var dbId = ObjectId(req.body.ID);
+    db.find("article", { _id: dbId }, function (err, result) {
         if (err) {
             console.log(err);
         }
@@ -175,8 +176,9 @@ exports.delArticle = function (req, res) {
         res.send("<a href=" + "/login" + ">点击前往登录页面</a>");
         return;
     }
-    var ID = req.body.ID;
-    db.deleteMany("article", { ID: ID }, function (err, results) {
+
+    var dbId = ObjectId(req.body.ID);
+    db.deleteMany("article", { _id: dbId }, function (err, results) {
         if (err) {
             console.log("删除文章错误:" + err);
             return;
@@ -196,8 +198,9 @@ exports.showModify = function (req, res) {
         res.send("错误");
         return;
     }
-    var aId = parseInt(req.query.ID);
-    db.find("article", { ID: aId }, function (err, result) {
+    var aId = req.query.ID;
+    var dbId = ObjectId(aId);
+    db.find("article", { _id: dbId }, function (err, result) {
         if (err) {
             console.log(err);
         }
@@ -514,7 +517,8 @@ exports.getManage = function (req, res) {
 exports.addVisitorNum = function (req, res) {
 
     var aId = req.body.ID;
-    db.find("article", { ID: aId }, function (err, result) {
+    var dbId = ObjectId(aId);
+    db.find("article", { _id: dbId }, function (err, result) {
         if (err) {
             console.log(err);
             return;
@@ -523,7 +527,7 @@ exports.addVisitorNum = function (req, res) {
         var ID = result[0].ID;
         db.updateMany(
             "article",
-            { ID: ID },
+            { _id: dbId },
             { $set: { visitNum: visitNum + 1 } },
             function (err, results) {
                 if (err) {
@@ -542,16 +546,18 @@ exports.doVisitorNum = function (req, res) {
         return;
     }
     var aId = req.body.ID;
-    db.find("article", { ID: aId }, function (err, result) {
+    var dbId = ObjectId(aId);
+    db.find("article", { _id: dbId }, function (err, result) {
         if (err) {
             console.log(err);
         }
         var visitNum = result[0].visitNum;
+        visitNum++;
         var ID = result[0].ID;
         db.updateMany(
             "article",
-            { ID: ID },
-            { $set: { visitNum: visitNum + 1 } },
+            { _id: dbId },
+            { $set: { visitNum: visitNum } },
             function (err, results) {
                 if (err) {
                     console.log("游览数据错误:" + err);
@@ -569,15 +575,15 @@ exports.doVisitorNum = function (req, res) {
 exports.addThumbsUp = function (req, res) {
 
     var aId = req.body.ID;
-    db.find("article", { ID: aId }, function (err, result) {
+    var dbId = ObjectId(aId);
+    db.find("article", { _id: dbId }, function (err, result) {
         if (err) {
             console.log(err);
         }
         var thumbsUp = result[0].thumbsUp;
-        var ID = result[0].ID;
         db.updateMany(
             "article",
-            { ID: ID },
+            { _id: dbId },
             { $set: { thumbsUp: thumbsUp + 1 } },
             function (err, results) {
                 if (err) {
@@ -598,7 +604,8 @@ exports.doThumbsUp = function (req, res) {
         return;
     }
     var aId = req.body.ID;
-    db.find("article", { ID: aId }, function (err, result) {
+    var dbId = ObjectId(aId);
+    db.find("article", { _id: dbId }, function (err, result) {
         if (err) {
             console.log(err);
         }
@@ -606,7 +613,7 @@ exports.doThumbsUp = function (req, res) {
         var ID = result[0].ID;
         db.updateMany(
             "article",
-            { ID: ID },
+            { _id: dbId },
             { $set: { thumbsUp: thumbsUp + 1 } },
             function (err, results) {
                 if (err) {

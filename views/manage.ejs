@@ -122,12 +122,12 @@
                 console.log(result);
                 var ajaxText = result.allResult;
                 for(var i = 0; i < ajaxText.length; i++){
-                    var html = "<tr><td>"+ajaxText[i].ID+"</td><td>"+ ajaxText[i].classify + "</td><td>";
+                    var html = "<tr><td>"+ajaxText[i]._id+"</td><td>"+ ajaxText[i].classify + "</td><td>";
                     html+= ajaxText[i].topic + "</td><td>" + ajaxText[i].publisher + "</td><td>";
                     html+= ajaxText[i].date + "</td><td>"+ajaxText[i].visitNum+"</td>";
-                    html+= "<td>"+ajaxText[i].thumbsUp+"</td><td>未开放</td> <td><a href='/modify?ID="+ajaxText[i].ID+"' class='btn btn-primary modify'>修改博客</a>";
+                    html+= "<td>"+ajaxText[i].thumbsUp+"</td><td>未开放</td> <td><a href='/modify?ID="+ajaxText[i]._id+"' class='btn btn-primary modify'>修改博客</a>";
                     //html+= "<td>"+ajaxText[i].thumbsUp+"</td><td>未开放</td> <td><a data-id='"+ajaxText[i].ID+"'class='btn btn-primary modify'>修改博客</a>";
-                    html+= "<a data-id='"+ajaxText[i].ID+"' class='btn btn-danger del'>删除博客</a></td></tr>";
+                    html+= "<a data-id='"+ajaxText[i]._id+"' class='btn btn-danger del'>删除博客</a></td></tr>";
                     $('#getAllArticle').append(html);
                 }
                 delArticle();
