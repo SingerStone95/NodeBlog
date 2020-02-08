@@ -169,5 +169,5 @@ var main = function () {
 	});
 	//task();
 }
-main();
-//task();
+//main();
+task();

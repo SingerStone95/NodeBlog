@@ -114,6 +114,6 @@ console.log("Server running ...");
 //app.listen(3000);
 
 //https监听3000端口
-httpsServer.listen(443);
+httpsServer.listen(3000);
 //http监听3001端口
 //httpServer.listen(80);

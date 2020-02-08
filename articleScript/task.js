@@ -1,11 +1,11 @@
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+﻿process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 var request = require("request");
 const https = require('https');
 var schedule = require('node-schedule');
 var Promise = require('promise');
 const url_detail = "https://news-at.zhihu.com/api/4/news/"
 const url = "https://news-at.zhihu.com/api/4/news/latest"
-const url_article = "https://106.12.193.145:443/doRecording/"
+const url_article = "https://106.12.193.145:3000/doRecording/"
 function task() {
     request(url, function (err, result) {
         var data = JSON.parse(result.body);
@@ -61,5 +61,5 @@ function main() {
     });
 }
 //task();
-//task();
-main();
+task();
+//main();

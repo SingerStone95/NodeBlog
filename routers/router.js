@@ -414,8 +414,8 @@ exports.showJijin = function (req, res) {
             }
             allResult[i] = itemArray;
         }
-        console.log('渲染的数据：');
-        console.log(allResult);
+        //console.log('渲染的数据：');
+        //console.log(allResult);
         res.render("jijin", {
             allResult: JSON.stringify(allResult)
         });
@@ -447,7 +447,7 @@ exports.addJijin = function (req, res) {
     var code = req.body.code
     var password = req.body.password
     if (password == 'cbh123456') {
-        jijinfile.addJijin(parseInt(code))
+        jijinfile.addJijin(code)
         res.send({ result: 0 });
     } else {
         res.send({ result: 1 });
