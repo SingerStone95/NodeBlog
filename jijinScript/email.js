@@ -4,7 +4,7 @@ var mailTransport = multer.createTransport({
     secureConnection: true, // 使用SSL方式（安全方式，防止被窃取信息）
     auth : {
         user : '1527627156@qq.com',
-        pass : 'vbkpelfxuixyhbcf'
+        pass : 'hbxgfptngyraigdc'
     },
 });
 exports.sendEmail=function (arrayTo,content){
