@@ -11,6 +11,17 @@ var url = 'http://www.howbuy.com/fund/ajax/gmfund/valuation/valuationnav.htm?jjd
 //  jijinArray[0] = '161631';
 //  jijinArray[1] = '161725';
 
+
+//控制小数点后位数
+//value输入的值
+//bit 控制的点数点位数
+//eg：value=1.234 bit=2 ，输出1.23
+function trans_fix_bit(value, bit) {
+	value = Math.round(Number(value) * Math.pow(10, bit)) / Math.pow(10, bit);
+	return value;
+
+}
+
 function task() {
 	var functions = new Array();
 	var requestData = function (url, code) {
@@ -19,7 +30,6 @@ function task() {
 				url: url,
 				method: "POST",
 				json: true,
-				//proxy: 'http://127.0.0.1:8080',
 				headers: {
 					"content-type": "application/json"
 				},
@@ -30,11 +40,12 @@ function task() {
 				} else {
 					console.log("request failed!");
 				}
+				//第二个请求
 				var itemUrl = 'http://www.howbuy.com/fund/' + code + '/';
-				console.log(itemUrl + '\n' + body + '\n');
+				console.log('第一个请求回包原始数据：' + itemUrl + '\n' + body + '\n');
 				request(itemUrl, function (err, result) {
 					var json = { 'code': code, 'data': body, 'data2': result.body };
-					//console.log(json);
+					console.log("第二个请求回包原始数据：" + JSON.stringify(json));
 					resolve(json);
 				});
 			});
@@ -43,6 +54,7 @@ function task() {
 	let jijinConfig = JSON.parse(jijinfile.readJijin().toString())
 	let jijinArray = jijinConfig.jijinList;
 	console.log(jijinArray);
+	// 第一个请求
 	for (var i = jijinArray.length - 1; i >= 0; i--) {
 		var itemUrl = 'http://www.howbuy.com/fund/ajax/gmfund/valuation/valuationnav.htm?jjdm=' + jijinArray[i];
 		functions[i] = requestData(itemUrl, jijinArray[i]);
@@ -59,7 +71,7 @@ function task() {
 	}
 	Promise.all(functions)
 		.then(function (res) {
-			var emailContent = '<h1 style="font-family:times;color:blue">赚钱不易,且买且珍惜</h1><Br/><Br/><Br/>';
+			var emailContent = '<h1 style="font-family:times;color:blue">顺势而为</h1><Br/><Br/><Br/>';
 			for (var i = 0; i < res.length; i++) {
 				var item = res[i];
 				var code = item.code;
@@ -93,7 +105,7 @@ function task() {
 					var hour = date.getHours();
 					var minute = date.getMinutes();
 					time = ' [' + month + '-' + day + ' ' + hour + ':' + minute + ']';
-					
+
 				}
 				console.log(time);
 				if (item.data2 != null && item.data2 != undefined) {
@@ -116,7 +128,6 @@ function task() {
 				console.log('\n解析到的html数据:\nname:' + name + '\nup:' + up + '\nrank:' + rank + '\nthreeMouth:' + threeMouth + '\noneYear:' + oneYear + '\nratio:' + ratio + '\n');
 				//数据都拿到了,开始拼接邮件
 				var emailContentitem = '<h3 style="background-color:yellow">' + name + '</h3>' +
-					'<img src="' + imageUrl + '"/>' +
 					getHtmlFromValue(ratio) +
 					'<h5>单位净值:' + value + '</h5>' +
 					'<h5>排名:' + rank + '      近三月:' + threeMouth + '      近一年:' + oneYear + '</h5>' +
@@ -126,14 +137,55 @@ function task() {
 				console.log("保存数据...");
 				//判断重复数据
 				var dayTime = time.substring(2, 11).split(' ')[0];
+				//保存到数据库
 				saveDataIfNeed(dayTime, code, ratio, name);
 
 			}
-			console.log('发送的邮件信息:\n' + emailContent);
-			var addrs = new Array();
-			//配置邮箱
-			addrs[0] = '<445191096@qq.com>';
-			email.sendEmail(addrs, emailContent);
+			request("https://legulegu.com/stockdata/a-ttm-lyr?entryScene=zhida_05_001&jump_from=1_13_18_00", function (err, result) {
+				$ = cheerio.load(result.body)
+				var mttcontent = $('.market-title-data-for-index').html()
+				console.log("第三个请求回包原始数据：" + mttcontent)
+				emailContent+='\n\n\n市盈率参考值：>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'
+				emailContent+='\n\n\n参考链接:https://legulegu.com/stockdata/a-ttm-lyr?entryScene=zhida_05_001&jump_from=1_13_18_00'
+				emailContent += "\n\n"
+				emailContent += mttcontent
+
+
+				request("https://www.kancaibao.com/ep", function (err, result) {
+					// console.log("第四个个请求回包原始数据：" + result.body);
+					$ = cheerio.load(result.body)
+					console.log("第四个个请求回包原始数据：" + $('h4').html());
+					emailContent+='\n\n\n股债比参考值：>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'
+					emailContent += "\n<table>\n"
+					emailContent += $('.table').html()
+					emailContent += "\n</table>\n"
+					var rate_gz=$('#rategz_0').html()
+					var rate_mv=$('#ratemv_0').html()
+					var gzclose=$('#gzclose_0').html()
+					emailContent += '<h4>股债比: ' + rate_gz + '</h5>\n'
+					emailContent += '<h5>股权收益率: ' + rate_mv + '</h5>\n'
+					emailContent += '<h5>国债收益率: ' + gzclose + '</h5>\n'
+					emailContent += "\n\n"
+					emailContent+='参考链接:https://www.kancaibao.com/ep'
+					//发邮件
+					console.log('发送的邮件信息:\n' + emailContent);
+					var addrs = new Array();
+					//配置邮箱
+					addrs[0] = '<445191096@qq.com>';
+					//addrs[1]='<183330050@qq.com>';
+					//addrs[2]='<345051833@qq.com>'
+					email.sendEmail(addrs, emailContent);
+				});
+
+
+			});
+
+
+
+
+
+
+
 
 		});
 
@@ -160,7 +212,7 @@ function task() {
 
 var main = function () {
 	var rule = new schedule.RecurrenceRule();
-	rule.hour = [10, 15];
+	rule.hour = [15];
 	rule.minute = 30;
 	rule.dayOfWeek = [1, 2, 3, 4, 5];
 	rule.second = 0;
