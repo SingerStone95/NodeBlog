@@ -63,15 +63,15 @@ function task() {
 	function getHtmlFromValue(value) {
 		var values = value.split(' ');
 		if (parseFloat(values[0]) >= 0) {//盈利
-			return '<h2 style="font-family:times;color:red">' + '净值变化：' + values[0] + '    比率：' + values[1] + '</h2>';
+			return '<h2 style="font-family:times;color:white">' + '净值变化：' + values[0] + '    比率：' + values[1] + '</h2>';
 		} else {//亏损
-			return '<h2 style="font-family:times;color:green">' + '净值变化：' + values[0] + '    比率：' + values[1] + '</h2>';
+			return '<h2 style="font-family:times;color:white">' + '净值变化：' + values[0] + '    比率：' + values[1] + '</h2>';
 		}
 
 	}
 	Promise.all(functions)
 		.then(function (res) {
-			var emailContent = '<h1 style="font-family:times;color:blue">顺势而为</h1><Br/><Br/><Br/>';
+			var emailContent = '<html><body> <h1  align="center" style="color:rgb(255, 99, 71);"><strong>顺势而为,三思而行，谋定而动</strong></h1>';
 			for (var i = 0; i < res.length; i++) {
 				var item = res[i];
 				var code = item.code;
@@ -127,12 +127,14 @@ function task() {
 				}
 				console.log('\n解析到的html数据:\nname:' + name + '\nup:' + up + '\nrank:' + rank + '\nthreeMouth:' + threeMouth + '\noneYear:' + oneYear + '\nratio:' + ratio + '\n');
 				//数据都拿到了,开始拼接邮件
-				var emailContentitem = '<h3 style="background-color:yellow">' + name + '</h3>' +
+				var emailContentitem = '<div style="background-color:rgba(255, 99, 71, 0.5);">'
+				emailContentitem += '<h3 style="color:MediumSeaGreen;">' + name + '</h3>' +
 					getHtmlFromValue(ratio) +
 					'<h5>单位净值:' + value + '</h5>' +
 					'<h5>排名:' + rank + '      近三月:' + threeMouth + '      近一年:' + oneYear + '</h5>' +
 					'<a href="http://www.howbuy.com/fund/' + item.code + '">基金详情链接</a>' +
-					'<h6>更新时间:' + time + '</h6><Br/>';
+					'<h6>更新时间:' + time + '</h6>';
+				emailContentitem += "</div><Br/>";
 				emailContent += emailContentitem;
 				console.log("保存数据...");
 				//判断重复数据
@@ -145,39 +147,41 @@ function task() {
 				$ = cheerio.load(result.body)
 				var mttcontent = $('.market-title-data-for-index').html()
 				console.log("第三个请求回包原始数据：" + mttcontent)
-				emailContent+='\n\n\n市盈率参考值：>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'
-				emailContent+='\n\n\n参考链接:https://legulegu.com/stockdata/a-ttm-lyr?entryScene=zhida_05_001&jump_from=1_13_18_00'
-				emailContent += "\n\n"
+				emailContent += "<hr />"
+				emailContent += '市盈率参考值：'
+				emailContent += "<a href=\"https://legulegu.com/stockdata/a-ttm-lyr?entryScene=zhida_05_001&jump_from=1_13_18_00\">市盈率参考链接</a>"
 				emailContent += mttcontent
-
-
 				request("https://www.kancaibao.com/ep", function (err, result) {
 					// console.log("第四个个请求回包原始数据：" + result.body);
 					$ = cheerio.load(result.body)
 					console.log("第四个个请求回包原始数据：" + $('h4').html());
-					emailContent+='\n\n\n股债比参考值：>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'
+					emailContent += "<hr />"
+					emailContent += '股债比参考值：'
+					emailContent += "<a href=\"https://www.kancaibao.com/ep\">股债比参考链接</a>"
+					var rate_gz = $('#rategz_0').html()
+					var rate_mv = $('#ratemv_0').html()
+					var gzclose = $('#gzclose_0').html()
+					emailContent += '<h4 style="color:SlateBlue;">股债比: <strong>' + rate_gz + '</strong></h4>\n'
+					emailContent += '<h6>股权收益率: ' + rate_mv + '</h5>\n'
+					emailContent += '<h6>国债收益率: ' + gzclose + '</h5>\n'
+					emailContent += "<hr />"
+
 					emailContent += "\n<table>\n"
 					emailContent += $('.table').html()
 					emailContent += "\n</table>\n"
-					var rate_gz=$('#rategz_0').html()
-					var rate_mv=$('#ratemv_0').html()
-					var gzclose=$('#gzclose_0').html()
-					emailContent += '<h4>股债比: ' + rate_gz + '</h5>\n'
-					emailContent += '<h5>股权收益率: ' + rate_mv + '</h5>\n'
-					emailContent += '<h5>国债收益率: ' + gzclose + '</h5>\n'
-					emailContent += "\n\n"
-					emailContent+='参考链接:https://www.kancaibao.com/ep'
+
+					emailContent += "<hr />"
+					emailContent += "</body></html>"
 					//发邮件
 					console.log('发送的邮件信息:\n' + emailContent);
 					var addrs = new Array();
 					//配置邮箱
 					addrs[0] = '<445191096@qq.com>';
-					addrs[1]='<183330050@qq.com>';
-					addrs[2]='<345051833@qq.com>';
+					addrs[1] = '<2941992802@qq.com>';
+					addrs[3] = '<183330050@qq.com>';
+					addrs[4] = '<345051833@qq.com>';
 					email.sendEmail(addrs, emailContent);
 				});
-
-
 			});
 
 
@@ -221,5 +225,5 @@ var main = function () {
 	});
 	//task();
 }
-main();
-//task();
+//main();
+task();
