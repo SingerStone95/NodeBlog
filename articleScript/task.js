@@ -5,7 +5,7 @@ var schedule = require('node-schedule');
 var Promise = require('promise');
 const url_detail = "https://news-at.zhihu.com/api/4/news/"
 const url = "https://news-at.zhihu.com/api/4/news/latest"
-const url_article = "https://106.12.193.145:3000/doRecording/"
+const url_article = "https://127.0.0.1:3000/doRecording/"
 function task() {
     request(url, function (err, result) {
         var data = JSON.parse(result.body);

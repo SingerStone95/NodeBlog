@@ -12,14 +12,15 @@ function _connectDB(callback) {
             callback(err, null);
             return;
         }
-        callback(err, db);
+        var dbo = db.db('comment');
+        callback(err, dbo, db);
     });
 }
 
 //插入数据
 exports.insertOne = function (collectionName, json, callback) {
-    _connectDB(function (err, db) {
-        db.collection(collectionName).insertOne(json, function (err, result) {
+    _connectDB(function (err, dbo, db) {
+        dbo.collection(collectionName).insertOne(json, function (err, result) {
             callback(err, result);
             db.close(); //关闭数据库
         })
@@ -28,11 +29,11 @@ exports.insertOne = function (collectionName, json, callback) {
 
 //修改
 exports.updateMany = function (collectionName, json1, json2, callback) {
-    _connectDB(function (err, db) {
-        db.collection(collectionName).update(
+    _connectDB(function (err, dbo, db) {
+        dbo.collection(collectionName).update(
             json1,
             json2,
-            {safe:true},
+            { safe: true },
             function (err, results) {
                 callback(err, results);
                 db.close();
@@ -64,8 +65,8 @@ exports.find = function (collectionName, json, C, D) {
     }
 
     //连接数据库，连接之后查找所有
-    _connectDB(function (err, db) {
-        var cursor = db.collection(collectionName).find(json).skip(skipnumber).limit(limit).sort(sort);
+    _connectDB(function (err, dbo, db) {
+        var cursor = dbo.collection(collectionName).find(json).skip(skipnumber).limit(limit).sort(sort);
         cursor.each(function (err, doc) {
             if (err) {
                 callback(err, null);
@@ -85,9 +86,9 @@ exports.find = function (collectionName, json, C, D) {
 
 //删除
 exports.deleteMany = function (collectionName, json, callback) {
-    _connectDB(function (err, db) {
+    _connectDB(function (err, dbo, db) {
         //删除
-        db.collection(collectionName).deleteMany(
+        dbo.collection(collectionName).deleteMany(
             json,
             function (err, results) {
                 callback(err, results);
@@ -99,9 +100,9 @@ exports.deleteMany = function (collectionName, json, callback) {
 
 
 
-exports.getAllCount = function (collectionName,callback) {
-    _connectDB(function (err, db) {
-        db.collection(collectionName).count({}).then(function(count) {
+exports.getAllCount = function (collectionName, callback) {
+    _connectDB(function (err, dbo, db) {
+        dbo.collection(collectionName).count({}).then(function (count) {
             callback(count);
             db.close();
         });
