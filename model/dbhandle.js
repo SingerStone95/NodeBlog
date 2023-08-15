@@ -1,10 +1,10 @@
 ﻿var MongoClient = require('mongodb').MongoClient;
-var DB_CONN_STR = 'mongodb://admin:cbh123456@localhost:27017/comment';
-var DB_LIST_STR = 'jijin';
+require('./setting.js');
+const  DB_LIST_STR = 'jijin';
 
 //插入
-var insertData = function (db, data, callback) {
-	var collection = db.collection(DB_LIST_STR);
+var insertData = function (db, dbo,data, callback) {
+	var collection = dbo.collection(DB_LIST_STR);
 	collection.insert(data, function (err, result) {
 		if (err) {
 			console.log('Error:' + err);
@@ -14,9 +14,9 @@ var insertData = function (db, data, callback) {
 	});
 }
 //查询 data:查询条件
-var selectData = function (db, whereStr, callback) {
+var selectData = function (db,dbo, whereStr, callback) {
 	//连接到表  
-	var collection = db.collection(DB_LIST_STR);
+	var collection = dbo.collection(global.DB_NAME);
 	//查询数据
 	//var whereStr = {"nick":'cbh',"name":"菜鸟工具"};
 	collection.find(whereStr).toArray(function (err, result) {
@@ -30,10 +30,11 @@ var selectData = function (db, whereStr, callback) {
 
 
 exports.saveData = function (data, callback) {
-	MongoClient.connect(DB_CONN_STR, function (err, db) {
+	MongoClient.connect(global.DB_URL, function (err, db) {
+		var dbo = db.db(global.DB_NAME);
 		if (!err) {
 			console.log('connect db success');
-			insertData(db, data, function (result) {
+			insertData(db,dbo, data, function (result) {
 				callback(result)
 				db.close();
 			});
@@ -42,10 +43,11 @@ exports.saveData = function (data, callback) {
 }
 
 exports.findData = function (whereStr, callback) {
-	MongoClient.connect(DB_CONN_STR, function (err, db) {
+	MongoClient.connect(global.DB_URL, function (err, db) {
+		var dbo = db.db(global.DB_NAME);
 		if (!err) {
 			console.log('connect db success');
-			selectData(db, whereStr, function (result) {
+			selectData(db, dbo,whereStr, function (result) {
 				callback(result)
 				db.close();
 			});
@@ -56,10 +58,11 @@ exports.findData = function (whereStr, callback) {
 }
 
 exports.updateDate = function (whereStr, resultStr, callback) {
-	MongoClient.connect(DB_CONN_STR, function (err, db) {
+	MongoClient.connect(global.DB_URL, function (err, db) {
+		var dbo = db.db(global.DB_NAME);
 		if (!err) {
 			console.log('connect db success');
-			var collection = db.collection(DB_LIST_STR);
+			var collection = dbo.collection(DB_LIST_STR);
 			collection.update(whereStr, resultStr, function (error, result) {
 				if (error) {
 					console.log('Error:' + error);
@@ -73,10 +76,11 @@ exports.updateDate = function (whereStr, resultStr, callback) {
 }
 
 exports.deleteData = function (whereStr, callback) {
-	MongoClient.connect(DB_CONN_STR, function (err, db) {
+	MongoClient.connect(global.DB_URL, function (err, db) {
+		var dbo = db.db(global.DB_NAME);
 		if (!err) {
 			console.log('connect db success');
-			var collection = db.collection(DB_LIST_STR);
+			var collection = dbo.collection(DB_LIST_STR);
 			collection.remove(whereStr, { safe: true }, function (error, result) {
 				if (error) {
 					console.log('Error:' + error);

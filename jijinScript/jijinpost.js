@@ -177,9 +177,9 @@ function task() {
 					var addrs = new Array();
 					//配置邮箱
 					addrs[0] = '<445191096@qq.com>';
-					addrs[1] = '<2941992802@qq.com>';
-					addrs[3] = '<183330050@qq.com>';
-					addrs[4] = '<345051833@qq.com>';
+					// addrs[1] = '<2941992802@qq.com>';
+					// addrs[3] = '<183330050@qq.com>';
+					// addrs[4] = '<345051833@qq.com>';
 					email.sendEmail(addrs, emailContent);
 				});
 			});
@@ -225,5 +225,5 @@ var main = function () {
 	});
 	//task();
 }
-main();
-//task();
+//main();
+task();
