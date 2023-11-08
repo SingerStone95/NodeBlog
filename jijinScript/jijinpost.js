@@ -170,12 +170,12 @@ function task() {
 			if (findResult.length > 0) {
 				console.log("重复数据，直接更新");
 				db.updateDate({ 'time': dayTime, 'code': code }, saveData, function (result) {
-					//console.log(result);
+					console.log(result);
 				});
 			} else {
 				console.log("无重复数据，第一次保存");
 				db.saveData(saveData, function (result) {
-					//console.log(result);
+					console.log(result);
 				});
 			}
 
