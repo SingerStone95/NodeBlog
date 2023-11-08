@@ -6,60 +6,32 @@ var jijinfile = require("./filehandle.js")
 var db = require("../model/dbhandle.js");
 var Promise = require('promise');
 var schedule = require('node-schedule');
-var url = 'http://www.howbuy.com/fund/ajax/gmfund/valuation/valuationnav.htm?jjdm=519690'
-//  var jijinArray = new Array();
-//  jijinArray[0] = '161631';
-//  jijinArray[1] = '161725';
 
 
 //控制小数点后位数
 //value输入的值
 //bit 控制的点数点位数
 //eg：value=1.234 bit=2 ，输出1.23
-function trans_fix_bit(value, bit) {
-	value = Math.round(Number(value) * Math.pow(10, bit)) / Math.pow(10, bit);
-	return value;
-
-}
 
 function task() {
 	var functions = new Array();
-	var requestData = function (url, code) {
+	var requestData = function (param, code) {
 		return new Promise(function (resolve, reject) {
-			request({
-				url: url,
-				method: "POST",
-				json: true,
-				headers: {
-					"content-type": "application/json"
-				},
-
-			}, function (error, response, body) {
-				if (!error && response.statusCode == 200) {
-					console.log("request success!");
-				} else {
-					console.log("request failed!");
-				}
-				//第二个请求
-				var itemUrl = 'http://www.howbuy.com/fund/' + code + '/';
-				console.log('第一个请求回包原始数据：' + itemUrl + '\n' + body + '\n');
-				request(itemUrl, function (err, result) {
-					var json = { 'code': code, 'data': body, 'data2': result.body };
-					console.log("第二个请求回包原始数据：" + JSON.stringify(json));
-					resolve(json);
-				});
+			var itemUrl = 'https://www.howbuy.com/fund/' + code + '/';
+			request(itemUrl, function (err, result) {
+				var json = { 'code': code, 'data': {}, 'data2': result.body };
+				console.log("请求回包原始数据：" + JSON.stringify(json));
+				resolve(json);
 			});
 		});
 	}
 	let jijinConfig = JSON.parse(jijinfile.readJijin().toString())
 	let jijinArray = jijinConfig.jijinList;
 	console.log(jijinArray);
-	// 第一个请求
+	// 第一个请求 Post 
 	for (var i = jijinArray.length - 1; i >= 0; i--) {
-		var itemUrl = 'http://www.howbuy.com/fund/ajax/gmfund/valuation/valuationnav.htm?jjdm=' + jijinArray[i];
-		functions[i] = requestData(itemUrl, jijinArray[i]);
+		functions[i] = requestData("", jijinArray[i]);
 	}
-
 	function getHtmlFromValue(value) {
 		var values = value.split(' ');
 		if (parseFloat(values[0]) >= 0) {//盈利
@@ -132,7 +104,7 @@ function task() {
 					getHtmlFromValue(ratio) +
 					'<h5>单位净值:' + value + '</h5>' +
 					'<h5>排名:' + rank + '      近三月:' + threeMouth + '      近一年:' + oneYear + '</h5>' +
-					'<a href="http://www.howbuy.com/fund/' + item.code + '">基金详情链接</a>' +
+					'<a href="https://www.howbuy.com/fund/' + item.code + '">基金详情链接</a>' +
 					'<h6>更新时间:' + time + '</h6>';
 				emailContentitem += "</div><Br/>";
 				emailContent += emailContentitem;
@@ -177,9 +149,6 @@ function task() {
 					var addrs = new Array();
 					//配置邮箱
 					addrs[0] = '<445191096@qq.com>';
-					// addrs[1] = '<2941992802@qq.com>';
-					// addrs[3] = '<183330050@qq.com>';
-					// addrs[4] = '<345051833@qq.com>';
 					email.sendEmail(addrs, emailContent);
 				});
 			});
