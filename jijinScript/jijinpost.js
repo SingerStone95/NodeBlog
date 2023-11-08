@@ -46,7 +46,7 @@ function task() {
 			var emailContent = '<html><body> <h1  align="center" style="color:rgb(255, 99, 71);"><strong>顺势而为,三思而行，谋定而动</strong></h1>';
 			for (var i = 0; i < res.length; i++) {
 				var item = res[i];
-				var code = item.code;
+				var code = item.code.toString();
 				//console.log(item.data2);
 				//console.log(item.data);
 				var value = '';
