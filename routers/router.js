@@ -380,13 +380,13 @@ exports.showComment = function (req, res) {
 //打开界面
 exports.showJijin = function (req, res) {
     dbhandle.findData({}, function (result) {
-        //console.log(result);
-        //console.log(result.length);
+        console.log(result);
+        console.log(result.length);
         var keys = new Array();
         //先获取目录
         var keyIndex = 0;
         for (j = 0; j < result.length; j++) {
-            // console.log(result[j]);
+            console.log(result[j]);
             var item = result[j];
             var canAdd = true;
             for (i = 0; i < keys.length; i++) {
@@ -414,8 +414,8 @@ exports.showJijin = function (req, res) {
             }
             allResult[i] = itemArray;
         }
-        //console.log('渲染的数据：');
-        //console.log(allResult);
+        console.log('渲染的数据：\n');
+        console.log(allResult);
         res.render("jijin", {
             allResult: JSON.stringify(allResult)
         });
