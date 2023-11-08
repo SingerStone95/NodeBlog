@@ -16,7 +16,7 @@ var insertData = function (db, dbo,data, callback) {
 //查询 data:查询条件
 var selectData = function (db,dbo, whereStr, callback) {
 	//连接到表  
-	var collection = dbo.collection(global.DB_NAME);
+	var collection = dbo.collection(DB_LIST_STR);
 	//查询数据
 	//var whereStr = {"nick":'cbh',"name":"菜鸟工具"};
 	collection.find(whereStr).toArray(function (err, result) {
