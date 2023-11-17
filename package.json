@@ -19,7 +19,7 @@
     "node-schedule": "^1.2.5",
     "nodemailer": "^6.8.0",
     "promise": "^8.0.1",
-    "request": "^2.83.0",
+    "request": "^2.88.2",
     "request-promise": "4.2.2",
     "serve-favicon": "^2.2.1"
   },

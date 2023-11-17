@@ -6,7 +6,7 @@ const configFileName =__dirname+"/jijinconfig.json"
 
 
 exports.addJijin = function (code) {
-    // 异步读取
+    // 异步读取，新增基金
     if (code == undefined) {
         console.log('code error');
         return
@@ -79,6 +79,7 @@ exports.removeJijin = function (code) {
 }
 
 exports.readJijin = function () {
+    //把基金数据读出来
     var filePath =  configFileName
     var data = fs.readFileSync(filePath);
     return data
