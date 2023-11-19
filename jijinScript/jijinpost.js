@@ -1,4 +1,4 @@
-﻿var request = require("request");
+var request = require("request");
 var cheerio = require("cheerio");
 var request = require("request");
 var email = require("./email.js");
@@ -7,68 +7,53 @@ var db = require("../model/dbhandle.js");
 var Promise = require('promise');
 var schedule = require('node-schedule');
 
-
-//控制小数点后位数
-//value输入的值
-//bit 控制的点数点位数
-//eg：value=1.234 bit=2 ，输出1.23
-
 function task() {
 	var functions = new Array();
 	var requestData = function (param, code) {
 		return new Promise(function (resolve, reject) {
 			var itemUrl = 'https://www.howbuy.com/fund/' + code + '/';
 			request(itemUrl, function (err, result) {
-				var json = { 'code': code, 'data': {}, 'data2': result.body };
+				var json = { 'code': code, 'data': {}, 'data2': result.body };//这个data是个啥玩意？
 				console.log("请求回包原始数据：" + JSON.stringify(json));
 				resolve(json);
 			});
 		});
 	}
+
 	let jijinConfig = JSON.parse(jijinfile.readJijin().toString())
 	let jijinArray = jijinConfig.jijinList;
 	console.log(jijinArray);
 	// 第一个请求 Post 
 	for (var i = jijinArray.length - 1; i >= 0; i--) {
-		functions[i] = requestData("", jijinArray[i]);
-	}
-	function getHtmlFromValue(value) {
-		var values = value.split(' ');
-		if (parseFloat(values[0]) >= 0) {//盈利
-			return '<h2 style="font-family:times;color:white">' + '净值变化：' + values[0] + '    比率：' + values[1] + '</h2>';
-		} else {//亏损
-			return '<h2 style="font-family:times;color:white">' + '净值变化：' + values[0] + '    比率：' + values[1] + '</h2>';
-		}
-
+		functions[i] = requestData("", jijinArray[i]);//根据jijinArray[i]提供的code通过requestData函数得到所对应的json原始数据
 	}
 	Promise.all(functions)
-		.then(function (res) {
-			var emailContent = '<html><body> <h1  align="center" style="color:rgb(255, 99, 71);"><strong>顺势而为,三思而行，谋定而动</strong></h1>';
+		.then(function (res)//res 是 Promise.all 解析后的结果。具体来说，Promise.all(requestPromises) 返回一个新的 Promise，
+							//这个 Promise 在所有传递给 Promise.all 的 Promise 都成功解析时被解析。一旦所有的 Promise 都解析完成，Promise.all 返回的 Promise 就会被解析，
+							//并传递一个包含所有 Promise 解析结果的数组，这个数组就是 res。
+		{
+			var emailContent = '<html><body> <h1  align="center" style="color:rgb(255, 99, 71);"><strong>顺势而为,三思而行，谋定而动</strong></h1>' +
+			'<h1 align="center" style="color:rgb(255, 99, 71);"><strong>真正的大师，永远怀着一颗 学徒的心</strong></h1>';
 			for (var i = 0; i < res.length; i++) {
 				var item = res[i];
 				var code = item.code.toString();
 				//console.log(item.data2);
 				//console.log(item.data);
-				var value = '';
-				var ratio = '';
 				var time = '';
-				var imageUrl = '';
-				var name = '';
-				var up = '';
-				var rank = '';
-				var threeMouth = '';
-				var oneYear = '';
-				if (item.data != null) {
+				var name = '';//基金名字和代码
+				var EstablishmentTime = '';//成立时间
+				var up = '';//涨跌幅
+				var rank = '';//排名
+				var threeMouth = '';//近3月涨跌幅
+				var oneYear = '';//近一年涨跌幅
+				var UnitNet = '';//单位净值
+				var scale = '';//规模
+				var FundManager = '';//基金经理
+				// var ComprehensiveScore = '';//综合评分
+
+				if (item.data != null) {//？？？？？？
 					$ = cheerio.load(item.data);
-					value = $('.con_value').text();
-					ratio = $('.con_ratio_red').text();
-					if (!ratio) {
-						ratio = $('.con_ratio_green').text();
-					}
 					time = $('.tips_icon_con').text();
-					var imgdata = $('#valuationTime').attr('value');
-					console.log(imgdata);
-					imageUrl = 'https://static.howbuy.com/images/fund/valuation/' + code + '_' + imgdata + '.png';
 				}
 				if (time == '' || time == undefined) {
 					var date = new Date();
@@ -77,93 +62,98 @@ function task() {
 					var hour = date.getHours();
 					var minute = date.getMinutes();
 					time = ' [' + month + '-' + day + ' ' + hour + ':' + minute + ']';
-
 				}
 				console.log(time);
 				if (item.data2 != null && item.data2 != undefined) {
 					$ = cheerio.load(item.data2);
+					//爬取基金名字
 					name = $('.lt').find('h1').text().trim();
+
+					//爬取涨跌幅
 					up = $('.b-3').find('em').text().trim().split('%')[0] + '%';
-					if (ratio == '' || ratio == undefined) {
-						ratio = '0.00 ' + up;
-					}
+
+					//爬取排名
 					rank = $('.b-3').find('em').text().trim().split('%')[1];
-					threeMouth = $('.clearfix .point .cRed').text().trim().split("%")[0] + '%';
-					if (threeMouth == '%' || threeMouth == undefined || threeMouth == 'undefined%') {
-						threeMouth = $('.clearfix .point .cGreen').text().trim().split("%")[0] + '%';
-					}
-					oneYear = $('.clearfix .point .cRed').text().trim().split("%")[1] + '%';
-					if (oneYear == '%' || oneYear == undefined || oneYear == 'undefined%') {
-						oneYear = $('.clearfix .point .cGreen').text().trim().split("%")[1] + '%';
-					}
+
+					//爬取三月涨跌幅
+					threeMouth = $('.clearfix .point .cGreen, .clearfix .point .cRed').eq(0).text().trim() + '%';
+
+					//爬取一年涨跌幅
+					oneYear = $('.clearfix .point .cGreen, .clearfix .point .cRed').eq(1).text().trim() + '%';										
+					
+					//爬取scale（规模）
+					const scaleMent = $('.gmfund_num li:contains("成立时间")').find('span');
+					scale = scaleMent.length ? scaleMent.text() : undefined;
+					console.log('规模:', scale);
+
+					//爬取成立时间
+					const establishmentTimeElement = $('.gmfund_num li:contains("成立时间")').find('span');
+					// 使用contains 选择器查找包含“成立时间”的元素，并获取其中的文本内容
+					EstablishmentTime = establishmentTimeElement.length ? establishmentTimeElement.text() : undefined;
+					console.log('成立时间:', EstablishmentTime);
+
+					//爬取单位净值
+					UnitNet = $('.shouyi-b.b1 .cGreen').text().trim();
+					console.log('单位净值:', UnitNet);
+					
+					//爬取基金经理
+					FundManager = $('.manager_b_r .info .item_4 li:first-child a').text();
+					console.log('基金经理:', FundManager);
+
+					//爬取综合评分，网页内没有综合评分了
+					// ComprehensiveScore = $('.manager_b_r .info .item_4 li:nth-child(3) .score span').text().trim();
+					// console.log('综合评分:', ComprehensiveScore);
 				}
-				console.log('\n解析到的html数据:\nname:' + name + '\nup:' + up + '\nrank:' + rank + '\nthreeMouth:' + threeMouth + '\noneYear:' + oneYear + '\nratio:' + ratio + '\n');
-				//数据都拿到了,开始拼接邮件
-				var emailContentitem = '<div style="background-color:rgba(255, 99, 71, 0.5);">'
-				emailContentitem += '<h3 style="color:MediumSeaGreen;">' + name + '</h3>' +
-					getHtmlFromValue(ratio) +
-					'<h5>单位净值:' + value + '</h5>' +
-					'<h5>排名:' + rank + '      近三月:' + threeMouth + '      近一年:' + oneYear + '</h5>' +
-					'<a href="https://www.howbuy.com/fund/' + item.code + '">基金详情链接</a>' +
-					'<h6>更新时间:' + time + '</h6>';
-				emailContentitem += "</div><Br/>";
-				emailContent += emailContentitem;
+				//数据都拿到了,开始拼接邮件		
+				console.log('\n解析到的html数据:\nname:' + name + '\nup:' + up + '\nrank:' + rank +  '\nEstablishmentTime:' + EstablishmentTime +
+				'\nUnitNet:'  + UnitNet + '\nscale:' + scale + '\nFundManager:' + FundManager + '\nthreeMouth:' + threeMouth + '\noneYear:' + oneYear + '\n');			
 				console.log("保存数据...");
 				//判断重复数据
 				var dayTime = time.substring(2, 11).split(' ')[0];
 				//保存到数据库
-				saveDataIfNeed(dayTime, code, ratio, name);
+				saveDataIfNeed(dayTime, code, up, name);
 
+			// 	request("https://legulegu.com/stockdata/a-ttm-lyr?entryScene=zhida_05_001&jump_from=1_13_18_00", function (err, result) {
+			// 	$ = cheerio.load(result.body)
+			// 	var mttcontent = $('.market-title-data-for-index').html()
+			// 	console.log("第三个请求回包原始数据：" + mttcontent)
+			// });
+			// 	request("https://www.kancaibao.com/ep", function (err, result) {
+			// 		$ = cheerio.load(result.body)
+			// 		console.log("第四个请求回包原始数据：" + $('h4').html());
+
+			// 		var rate_gz = $('#rategz_0').html()
+			// 		var rate_mv = $('#ratemv_0').html()
+			// 		var gzclose = $('#gzclose_0').html()
+			// 	});		啥也没有了
+				emailContent +=
+					'<div style="background-color:rgba(0,255,0);">' +  '<h3 style="color:MediumSeaGreen;">' + name + '</h3>' +					
+					'<a href="https://www.howbuy.com/fund/" '  + item.code + '">基金详情链接</a>' +
+					'<h6>更新时间:' + time + '</h6>' + "</div>" + "<hr />" + 
+					'市盈率参考值：' + "<a href=\"https://legulegu.com/stockdata/a-ttm-lyr?entryScene=zhida_05_001&jump_from=1_13_18_00\">市盈率参考链接</a>" +
+					"<hr />" + '股债比参考值：' + "<a href=\"https://www.kancaibao.com/ep\">股债比参考链接</a>" + "<hr />" +					
+					'<table border="1"><tr><td>字段名</td><td>数据</td></tr>' +
+					'<tr><td>成立时间</td><td>' + EstablishmentTime + '</td></tr>' +
+					'<tr><td>涨跌幅</td><td>' + up + '</td></tr>' +
+					'<tr><td>排名</td><td>' + rank + '</td></tr>' +
+					'<tr><td>近三月涨跌幅</td><td>' + threeMouth + '</td></tr>' +
+					'<tr><td>近一年涨跌幅</td><td>' + oneYear + '</td></tr>' +
+					'<tr><td>单位净值</td><td>' + UnitNet + '</td></tr>' +
+					'<tr><td>规模</td><td>' + scale + '</td></tr>' +
+					'<tr><td>基金经理</td><td>' + FundManager + '</td></tr></table><Br/>';				
 			}
-			request("https://legulegu.com/stockdata/a-ttm-lyr?entryScene=zhida_05_001&jump_from=1_13_18_00", function (err, result) {
-				$ = cheerio.load(result.body)
-				var mttcontent = $('.market-title-data-for-index').html()
-				console.log("第三个请求回包原始数据：" + mttcontent)
-				emailContent += "<hr />"
-				emailContent += '市盈率参考值：'
-				emailContent += "<a href=\"https://legulegu.com/stockdata/a-ttm-lyr?entryScene=zhida_05_001&jump_from=1_13_18_00\">市盈率参考链接</a>"
-				emailContent += mttcontent
-				request("https://www.kancaibao.com/ep", function (err, result) {
-					// console.log("第四个个请求回包原始数据：" + result.body);
-					$ = cheerio.load(result.body)
-					console.log("第四个个请求回包原始数据：" + $('h4').html());
-					emailContent += "<hr />"
-					emailContent += '股债比参考值：'
-					emailContent += "<a href=\"https://www.kancaibao.com/ep\">股债比参考链接</a>"
-					var rate_gz = $('#rategz_0').html()
-					var rate_mv = $('#ratemv_0').html()
-					var gzclose = $('#gzclose_0').html()
-					emailContent += '<h4 style="color:SlateBlue;">股债比: <strong>' + rate_gz + '</strong></h4>\n'
-					emailContent += '<h6>股权收益率: ' + rate_mv + '</h5>\n'
-					emailContent += '<h6>国债收益率: ' + gzclose + '</h5>\n'
-					emailContent += "<hr />"
 
-					emailContent += "\n<table>\n"
-					emailContent += $('.table').html()
-					emailContent += "\n</table>\n"
-
-					emailContent += "<hr />"
-					emailContent += "</body></html>"
-					//发邮件
-					console.log('发送的邮件信息:\n' + emailContent);
-					var addrs = new Array();
-					//配置邮箱
-					addrs[0] = '<445191096@qq.com>';
-					email.sendEmail(addrs, emailContent);
-				});
-			});
-
-
-
-
-
-
-
-
+			emailContent += '</body></html>';
+			var addrs = new Array();
+				//配置邮箱
+				addrs[0] = '"pjc"<2751607512@qq.com>';
+				console.log('发送的邮件信息:\n' + emailContent);
+				email.sendEmail(addrs, emailContent);	
+			
 		});
 
-	function saveDataIfNeed(dayTime, code, ratio, name) {
-		var saveData = { "name": name, 'code': code, 'ratio': ratio, 'time': dayTime };
+	function saveDataIfNeed(dayTime, code, up, name) {
+		var saveData = { "name": name, 'code': code, 'up': up, 'time': dayTime };
 		console.log(saveData);
 		db.findData({ 'time': dayTime, 'code': code }, function (findResult) {
 			console.log(findResult);
@@ -183,7 +173,7 @@ function task() {
 	}
 }
 
-var main = function () {
+var main = function () {//定时执行task()
 	var rule = new schedule.RecurrenceRule();
 	rule.hour = [15];
 	rule.minute = 30;
