@@ -105,7 +105,7 @@ function task() {
 				//判断重复数据
 				var dayTime = time.substring(2, 11).split(' ')[0];
 				//保存到数据库
-				//saveDataIfNeed(dayTime, code, up, name);
+				saveDataIfNeed(dayTime, code, up, name);
 				emailContent +=
 					'<div style="background-color:rgba(0,255,0);">' + '<h3 style="color:MediumSeaGreen;">' + name + '</h3>' +
 					'<a href="https://www.howbuy.com/fund/" ' + item.code + '">基金详情链接</a>' +
