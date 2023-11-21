@@ -74,10 +74,10 @@ function task() {
 					rank = $('.b-3').find('em').text().trim().split('%')[1];
 
 					//爬取三月涨跌幅
-					threeMouth = $('.clearfix .point .cGreen, .clearfix .point .cRed').eq(0).text().trim() + '%';
+					threeMouth = $('.clearfix .point .cGreen, .clearfix .point .cRed').eq(0).text().trim();
 
 					//爬取一年涨跌幅
-					oneYear = $('.clearfix .point .cGreen, .clearfix .point .cRed').eq(1).text().trim() + '%';
+					oneYear = $('.clearfix .point .cGreen, .clearfix .point .cRed').eq(1).text().trim();
 
 					//爬取scale（规模）
 					const scaleMent = $('.gmfund_num li:contains("成立时间")').find('span');
@@ -105,11 +105,11 @@ function task() {
 				//判断重复数据
 				var dayTime = time.substring(2, 11).split(' ')[0];
 				//保存到数据库
-				saveDataIfNeed(dayTime, code, up, name);
+				saveDataIfNeed(dayTime, code, up, name, rank, threeMouth, oneYear);
 				emailContent +=
-					'<div style="background-color:rgba(0,255,0);">' + '<h3 style="color:MediumSeaGreen;">' + name + '</h3>' +
+					'<div style="background-color:rgba(0,255,0,0.1);">' + '<h3 style="color:MediumSeaGreen;">' + name + '</h3>' +
 					'<a href="https://www.howbuy.com/fund/" ' + item.code + '">基金详情链接</a>' +
-					'<h6>更新时间:' + time + '</h6>' + "</div>" + "<hr />" +
+					'<h6>更新时间:' + time + '</h6>' + "<hr />" +
 					'市盈率参考值：' + "<a href=\"https://legulegu.com/stockdata/a-ttm-lyr?entryScene=zhida_05_001&jump_from=1_13_18_00\">市盈率参考链接</a>" +
 					"<hr />" + '股债比参考值：' + "<a href=\"https://www.kancaibao.com/ep\">股债比参考链接</a>" + "<hr />" +
 					'<table border="1"><tr><td>字段名</td><td>数据</td></tr>' +
@@ -120,7 +120,7 @@ function task() {
 					'<tr><td>近一年涨跌幅</td><td>' + oneYear + '</td></tr>' +
 					'<tr><td>单位净值</td><td>' + UnitNet + '</td></tr>' +
 					'<tr><td>规模</td><td>' + scale + '</td></tr>' +
-					'<tr><td>基金经理</td><td>' + FundManager + '</td></tr></table><Br/>';
+					'<tr><td>基金经理</td><td>' + FundManager + '</td></tr></table><Br/></div>';
 			}
 
 			emailContent += '</body></html>';
@@ -132,8 +132,8 @@ function task() {
 
 		});
 
-	function saveDataIfNeed(dayTime, code, up, name) {
-		var saveData = { "name": name, 'code': code, 'up': up, 'time': dayTime };
+	function saveDataIfNeed(dayTime, code, up, name, rank, threeMouth, oneYear) {
+		var saveData = { "name": name, 'code': code, 'ratio': up, 'time': dayTime, "rank": rank, "threeMouth": threeMouth, "oneYear": oneYear };
 		console.log(saveData);
 		db.findData({ 'time': dayTime, 'code': code }, function (findResult) {
 			console.log(findResult);
