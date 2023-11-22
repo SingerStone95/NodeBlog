@@ -80,7 +80,7 @@ function task() {
 					oneYear = $('.clearfix .point .cGreen, .clearfix .point .cRed').eq(1).text().trim();
 
 					//爬取scale（规模）
-					const scaleMent = $('.gmfund_num li:contains("成立时间")').find('span');
+					const scaleMent = $('.gmfund_num li:contains("规模")').find('span');
 					scale = scaleMent.length ? scaleMent.text() : undefined;
 					console.log('规模:', scale);
 
