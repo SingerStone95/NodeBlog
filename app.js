@@ -14,7 +14,6 @@ var options = {
     cert: fs.readFileSync('./cert/server.crt')
 }
 var httpsServer = https.createServer(options, app);
-var httpServer = http.createServer(app);
 //使用session
 app.use(session({
     secret: 'keyboard cat',
@@ -118,6 +117,6 @@ console.log("Server running ...");
 //app.listen(3000);
 
 //https监听3000端口
-//httpsServer.listen(3000);
+httpsServer.listen(3000);
 //http监听3001端口
-httpServer.listen(3001);
+//httpServer.listen(3500);
