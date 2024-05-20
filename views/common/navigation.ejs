@@ -1,0 +1,31 @@
+<div class="drop-navigation">
+    <div class="top-menu">
+        <ul>
+            <li class="/"><a href="/">主页</a></li>
+            <li><a href="/ReactNative">ReactNative</a></li>
+            <li><a href="/NodeJS">NodeJS</a></li>
+            <li><a href="/Android">Android</a></li>
+            <li><a href="/writeAvr">随记</a></li>
+            <li><a href="/jijin">基金</a></li>
+            <li><a href="/toolbox">工具箱</a></li>
+            <li><a href="/login">登录到管理页</a></li>
+            <li><a href="/About">关于我</a></li>
+            <li><a href="/comment">留言</a></li>
+        </ul>
+    </div>
+    <!-- script-for-menu -->
+    <script>
+        $(".top-navigation").click(function () {
+            $(".drop-navigation").slideToggle(300, function () {
+                // Animation complete.
+            });
+        });
+    </script>
+
+    <div class="side-btm">
+        <div class="copyright">
+            <p>Design by SingerStone.</p>
+            <p>Copyright &copy; 2016.SingerStone All rights reserved.</p>
+        </div>
+    </div>
+</div>
