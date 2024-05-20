@@ -76,6 +76,10 @@ app.get("/writeAvr", router.showwriteAvr);
 app.post("/getwriteAvr", router.getwriteAvr);
 //Android
 
+//ToolBox
+app.get("/ToolBox", router.showToolBox);
+//app.post("/getToolBox", router.getToolBox);
+//ToolBox
 
 //About!
 app.get("/About", router.showAbout);

@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
 <html>
+
 <head>
     <title>A-路漫漫其修远兮，吾将上下而求索</title>
     <link href="css/bootstrap.css" rel='stylesheet' type='text/css' />
@@ -14,72 +15,44 @@
     <meta name="keywords" content="Scott Jeremy" />
     <script src="js/underscore-noflect.js"></script>
 </head>
+
 <body>
-<!-- header -->
-<div class="col-md-2 sidebar">
-    <div class="sidebar_top">
-        <h1><a href="/">Singer<span> Stone</span></a></h1>
-    </div>
-    <div class="top-navigation">
-        <div class="t-menu">MENU</div>
-
-        <div class="t-img">
-            <img src="images/lines.png" alt="" />
+    <!-- header -->
+    <div class="col-md-2 sidebar">
+        <div class="sidebar_top">
+            <h1><a href="/">Singer<span> Stone</span></a></h1>
         </div>
-        <div class="clearfix"> </div>
-    </div>
-    <div class="drop-navigation">
-        <div class="top-menu">
-            <ul>
-             <li class="/"><a href="/">主页</a></li>
-              <li><a href="/ReactNative">ReactNative</a></li>
-              <li><a href="/NodeJS">NodeJS</a></li>
-              <li><a href="/Android">Android</a></li>
-              <li><a href="/writeAvr">随记</a></li>
-              <li><a href="/jijin">基金</a></li>
-              <li><a href="/login">登录到管理页</a></li>
-              <li><a href="/About">关于我</a></li>
-              <li><a href="/comment">留言</a></li>
-            </ul>
-        </div>
-        <!-- script-for-menu -->
-        <script>
-            $( ".top-navigation" ).click(function() {
-                $( ".drop-navigation" ).slideToggle( 300, function() {
-                    // Animation complete.
-                });
-            });
-        </script>
+        <div class="top-navigation">
+            <div class="t-menu">MENU</div>
 
-        <div class="side-btm">
-            <div class="copyright">
-                <p>Design by SingerStone</p>
-                <p>Copyright &copy; 2016.SingerStone All rights reserved.</p>
+            <div class="t-img">
+                <img src="images/lines.png" alt="" />
             </div>
+            <div class="clearfix"> </div>
         </div>
+        <%- include('common/navigation') %>
     </div>
-</div>
-<div class="col-sm-10 col-sm-offset-3 col-md-10 col-md-offset-2">
-    <div class="news">
-        <div class="news-sec">
-            <div class="news-top" id="getAllArticle">
+    <div class="col-sm-10 col-sm-offset-3 col-md-10 col-md-offset-2">
+        <div class="news">
+            <div class="news-sec">
+                <div class="news-top" id="getAllArticle">
 
-            </div>
-            <div class="col-sm-12">
-                <nav>
-                    <ul class="pagination">
+                </div>
+                <div class="col-sm-12">
+                    <nav>
+                        <ul class="pagination">
 
-                    </ul>
-                </nav>
+                        </ul>
+                    </nav>
+                </div>
             </div>
+            <div class="clearfix"> </div>
         </div>
-        <div class="clearfix"> </div>
-    </div>
 
-</div>
-<div class="clearfix"></div>
-<!---->
-<script type="text/template" id="allArticle">
+    </div>
+    <div class="clearfix"></div>
+    <!---->
+    <script type="text/template" id="allArticle">
     <div class="col-md-11 news-1">
         <a href="/article?ID={{= _id }}"><h5>{{= topic }}</h5></a>
         <h6>{{= date }}</h6>
@@ -100,23 +73,24 @@
     </div>
 </script>
 
-<script type="text/javascript">
-    var getAllArticle = $('#getAllArticle');
-    //得到模板
-    var compiled = _.template($("#allArticle").html());
-    getPage(0);
-    //AJAX读取文章列表
-    function getPage(page) {
-        $.post("/getwriteAvr?page="+page,function (result) {
-            for(var i = 0; i<result.allResult.length; i++){
-                var htmlstring = compiled(result.allResult[i]);
-                getAllArticle.append(htmlstring);
-            }
-        });
-    }
+    <script type="text/javascript">
+        var getAllArticle = $('#getAllArticle');
+        //得到模板
+        var compiled = _.template($("#allArticle").html());
+        getPage(0);
+        //AJAX读取文章列表
+        function getPage(page) {
+            $.post("/getwriteAvr?page=" + page, function (result) {
+                for (var i = 0; i < result.allResult.length; i++) {
+                    var htmlstring = compiled(result.allResult[i]);
+                    getAllArticle.append(htmlstring);
+                }
+            });
+        }
 
-</script>
+    </script>
 
-<!---->
+    <!---->
 </body>
+
 </html>

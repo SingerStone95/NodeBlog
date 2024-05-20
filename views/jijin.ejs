@@ -38,35 +38,7 @@
             </div>
             <div class="clearfix"> </div>
         </div>
-        <div class="drop-navigation">
-            <div class="top-menu">
-                <ul>
-                    <li class="/"><a href="/">主页</a></li>
-                    <li><a href="/ReactNative">ReactNative</a></li>
-                    <li><a href="/NodeJS">NodeJS</a></li>
-                    <li><a href="/Android">Android</a></li>
-                    <li><a href="/writeAvr">随记</a></li>
-                    <li><a href="/jijin">基金</a></li>
-                    <li><a href="/login">登录到管理页</a></li>
-                    <li><a href="/About">关于我</a></li>
-                    <li><a href="/comment">留言</a></li>
-                </ul>
-            </div>
-            <!-- script-for-menu -->
-            <script>
-                $(".top-navigation").click(function () {
-                    $(".drop-navigation").slideToggle(300, function () {
-                        // Animation complete.
-                    });
-                });
-            </script>
-            <div class="side-btm">
-                <div class="copyright">
-                    <p>Design by SingerStone</p>
-                    <p>Copyright &copy; 2016.SingerStone All rights reserved.</p>
-                </div>
-            </div>
-        </div>
+        <%- include('common/navigation') %>
     </div>
 
     <div class="col-sm-10 col-sm-offset-3 col-md-10 col-md-offset-2">
@@ -93,13 +65,13 @@
             for (var i = 0; i < datas.length; i++) {
                 x[i] = datas[i].time;
                 var yString = datas[i].ratio;
-                var yFloat=0.0;
+                var yFloat = 0.0;
                 if (yString == undefined || yString == '') {
                     yFloat = 0.0;
                 } else {
                     yFloat = parseFloat(yString.split('%')[0]);
                 }
-               //var yFloat = parseFloat(yString.split(' ')[1].split('%')[0]);
+                //var yFloat = parseFloat(yString.split(' ')[1].split('%')[0]);
                 y[i] = yFloat;
             }
             // 图表配置
@@ -133,7 +105,7 @@
             return options;
         }
 
-        var datas = JSON.parse(JSON.stringify(<%-allResult %>));
+        var datas = JSON.parse(JSON.stringify(<% -allResult %>));
 
         // 图表初始化函数
         for (i = 0; i < datas.length; i++) {

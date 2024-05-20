@@ -373,6 +373,10 @@ exports.showAbout = function (req, res) {
 };
 //About
 
+exports.showToolBox = function (req, res) {
+    res.render("toolbox");
+};
+
 //Comment!
 exports.showComment = function (req, res) {
     res.render("comment");

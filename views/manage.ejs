@@ -1,8 +1,9 @@
 <!DOCTYPE HTML>
 <html>
+
 <head>
     <title>博客文章管理 - 路漫漫其修远兮，吾将上下而求索</title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 
     <!-- 网站后台样式开始 -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -17,185 +18,187 @@
 
 <body>
 
-<div id="wrapper">
+    <div id="wrapper">
 
-    <nav class="navbar-default navbar-static-side" role="navigation">
-        <div class="sidebar-collapse">
-            <ul class="nav metismenu" id="side-menu">
-                <li class="nav-header">
-                    <div class="dropdown profile-element"> <span>
-                            <img alt="image" class="img-circle" src="images/profile_small.jpg"/>
-                             </span>
-                    </div>
-                    <div class="logo-element">
-                        Singer
-                    </div>
-                </li>
-                <li class="active">
-                    <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">博客管理</span><span class="fa arrow"></span></a>
-                    <ul class="nav nav-second-level collapse">
-                       <li><a href="/">主页</a></li>
-                       <li><a href="/recording">写博客</a></li>
-                       <li><a href="/manage">博客文章管理</a></li>
-                    </ul>
-                </li>
-            </ul>
-
-        </div>
-    </nav>
-
-
-    <div id="page-wrapper" class="gray-bg">
-        <div class="row border-bottom">
-            <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
-                <div class="navbar-header">
-                    <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
-                </div>
-                <ul class="nav navbar-top-links navbar-right">
-                    <li>
-                        <span class="m-r-sm text-muted welcome-message">欢迎来到SingerStone的管理后台</span>
+        <nav class="navbar-default navbar-static-side" role="navigation">
+            <div class="sidebar-collapse">
+                <ul class="nav metismenu" id="side-menu">
+                    <li class="nav-header">
+                        <div class="dropdown profile-element"> <span>
+                                <img alt="image" class="img-circle" src="images/profile_small.jpg" />
+                            </span>
+                        </div>
+                        <div class="logo-element">
+                            Singer
+                        </div>
                     </li>
-
-                    <li>
-                        <a href="/unlogin">
-                            <i class="fa fa-sign-out"></i> 退出登录
-                        </a>
+                    <li class="active">
+                        <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">博客管理</span><span
+                                class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level collapse">
+                            <li><a href="/">主页</a></li>
+                            <li><a href="/recording">写博客</a></li>
+                            <li><a href="/manage">博客文章管理</a></li>
+                        </ul>
                     </li>
                 </ul>
 
-            </nav>
-        </div>
+            </div>
+        </nav>
 
-        <div class="wrapper wrapper-content animated fadeInRight">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="ibox float-e-margins">
-                        <div class="ibox-title">
-                            <a href="/recording" class="btn btn-info">写博客</a>
-                        </div>
-                        <div class="ibox-content">
 
-                            <table class="table table-bordered">
-                                <thead>
-                                <tr>
-                                    <th>博客ID</th>
-                                    <th>分类</th>
-                                    <th>博客标题</th>
-                                    <th>发布者</th>
-                                    <th>发布时间</th>
-                                    <th>游览数</th>
-                                    <th>点赞数</th>
-                                    <th>评论数</th>
-                                    <th>操作</th>
-                                </tr>
-                                </thead>
-                                <tbody id="getAllArticle">
+        <div id="page-wrapper" class="gray-bg">
+            <div class="row border-bottom">
+                <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+                    <div class="navbar-header">
+                        <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i
+                                class="fa fa-bars"></i> </a>
+                    </div>
+                    <ul class="nav navbar-top-links navbar-right">
+                        <li>
+                            <span class="m-r-sm text-muted welcome-message">欢迎来到SingerStone的管理后台</span>
+                        </li>
 
-                                </tbody>
-                            </table>
-                            <nav>
-                                <ul class="pagination">
-                                </ul>
-                            </nav>
+                        <li>
+                            <a href="/unlogin">
+                                <i class="fa fa-sign-out"></i> 退出登录
+                            </a>
+                        </li>
+                    </ul>
+
+                </nav>
+            </div>
+
+            <div class="wrapper wrapper-content animated fadeInRight">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <a href="/recording" class="btn btn-info">写博客</a>
+                            </div>
+                            <div class="ibox-content">
+
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>博客ID</th>
+                                            <th>分类</th>
+                                            <th>博客标题</th>
+                                            <th>发布者</th>
+                                            <th>发布时间</th>
+                                            <th>游览数</th>
+                                            <th>点赞数</th>
+                                            <th>评论数</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="getAllArticle">
+
+                                    </tbody>
+                                </table>
+                                <nav>
+                                    <ul class="pagination">
+                                    </ul>
+                                </nav>
+                            </div>
                         </div>
                     </div>
+                </div>
+
+            </div>
+            <div class="footer">
+                <div>
+                    <strong>Copyright</strong> &copy; 2016.Singerstone All rights reserved. &copy;
                 </div>
             </div>
 
         </div>
-        <div class="footer">
-            <div>
-                <strong>Copyright</strong> &copy; 2016.Singerstone All rights reserved. &copy;
-            </div>
-        </div>
-
     </div>
-</div>
 
-<script type="text/javascript">
-    $(document).ready(function(){
-        var getAllArticle = $('#getAllArticle');
-        getPage(0);
-        //AJAX读取文章列表
-        function getPage(page) {
-            $.post("/getArticle?page="+page,function (result) {//href="/article?ID={{= ID }}"
-                console.log(result);
-                var ajaxText = result.allResult;
-                for(var i = 0; i < ajaxText.length; i++){
-                    var html = "<tr><td>"+ajaxText[i]._id+"</td><td>"+ ajaxText[i].classify + "</td><td>";
-                    html+= ajaxText[i].topic + "</td><td>" + ajaxText[i].publisher + "</td><td>";
-                    html+= ajaxText[i].date + "</td><td>"+ajaxText[i].visitNum+"</td>";
-                    html+= "<td>"+ajaxText[i].thumbsUp+"</td><td>未开放</td> <td><a href='/modify?ID="+ajaxText[i]._id+"' class='btn btn-primary modify'>修改博客</a>";
-                    //html+= "<td>"+ajaxText[i].thumbsUp+"</td><td>未开放</td> <td><a data-id='"+ajaxText[i].ID+"'class='btn btn-primary modify'>修改博客</a>";
-                    html+= "<a data-id='"+ajaxText[i]._id+"' class='btn btn-danger del'>删除博客</a></td></tr>";
-                    $('#getAllArticle').append(html);
-                }
-                delArticle();
-            });
-        }
-        //分页
-        $.post("/getAllAmount", function (result) {
-            var amount = parseInt(result);
-            pagement = Math.ceil(amount / 10);
-            for(var i = 1; i <pagement+1;i++){
-                $(".pagination").append("<li><a href='javascript:;'>" + i +"</a></li>");
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var getAllArticle = $('#getAllArticle');
+            getPage(0);
+            //AJAX读取文章列表
+            function getPage(page) {
+                $.post("/getArticle?page=" + page, function (result) {//href="/article?ID={{= ID }}"
+                    console.log(result);
+                    var ajaxText = result.allResult;
+                    for (var i = 0; i < ajaxText.length; i++) {
+                        var html = "<tr><td>" + ajaxText[i]._id + "</td><td>" + ajaxText[i].classify + "</td><td>";
+                        html += ajaxText[i].topic + "</td><td>" + ajaxText[i].publisher + "</td><td>";
+                        html += ajaxText[i].date + "</td><td>" + ajaxText[i].visitNum + "</td>";
+                        html += "<td>" + ajaxText[i].thumbsUp + "</td><td>未开放</td> <td><a href='/modify?ID=" + ajaxText[i]._id + "' class='btn btn-primary modify'>修改博客</a>";
+                        //html+= "<td>"+ajaxText[i].thumbsUp+"</td><td>未开放</td> <td><a data-id='"+ajaxText[i].ID+"'class='btn btn-primary modify'>修改博客</a>";
+                        html += "<a data-id='" + ajaxText[i]._id + "' class='btn btn-danger del'>删除博客</a></td></tr>";
+                        $('#getAllArticle').append(html);
+                    }
+                    delArticle();
+                });
             }
-            $(".pagination li:first").addClass("active");
-            $(".pagination li").click(function () {
-                var page = $(this).index();
-                $('#getAllArticle').html("");
-                getPage(page);
-                $(this).addClass("active").siblings().removeClass("active");
-            });
-        });
-
-
-        function delArticle() {
-            $(".del").click(function () {
-                var ID = $(this).data("id");
-                swal({
-                    title: "你确定要删除吗?",
-                    text: "你将要删除该条博客",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#DD6B55",
-                    confirmButtonText: "确定删除",
-                    closeOnConfirm: false
-                }, function () {
-                   $.post("/delArticle",{"ID":ID}, function (result) {
-                    if(result == 1){
-                     swal({
-                        title: "操作成功",
-                        text: "你已删除该博客.",
-                        timer: 2000
-                    },function () {
-                        window.location.reload();
-                    });
-                 }else {
-                    console.log("删除错误");
+            //分页
+            $.post("/getAllAmount", function (result) {
+                var amount = parseInt(result);
+                pagement = Math.ceil(amount / 10);
+                for (var i = 1; i < pagement + 1; i++) {
+                    $(".pagination").append("<li><a href='javascript:;'>" + i + "</a></li>");
                 }
+                $(".pagination li:first").addClass("active");
+                $(".pagination li").click(function () {
+                    var page = $(this).index();
+                    $('#getAllArticle').html("");
+                    getPage(page);
+                    $(this).addClass("active").siblings().removeClass("active");
+                });
             });
-               });
-            });
-        }
 
 
- /*function modifyArticle(){
-         $(".modify").click(function () {
-            var ID = $(this).data("id");
-            alert(ID);
-            window.location.href = "/modify?ID="+ID;
-        }); 
-     }*/
-        
-    });
-</script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/jquery.metisMenu.js"></script>
-<script src="js/jquery.slimscroll.min.js"></script>
-<script src="js/sweetalert.min.js"></script>
-<script src="js/inspinia.js"></script>
-<script src="js/pace.min.js"></script>
+            function delArticle() {
+                $(".del").click(function () {
+                    var ID = $(this).data("id");
+                    swal({
+                        title: "你确定要删除吗?",
+                        text: "你将要删除该条博客",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "确定删除",
+                        closeOnConfirm: false
+                    }, function () {
+                        $.post("/delArticle", { "ID": ID }, function (result) {
+                            if (result == 1) {
+                                swal({
+                                    title: "操作成功",
+                                    text: "你已删除该博客.",
+                                    timer: 2000
+                                }, function () {
+                                    window.location.reload();
+                                });
+                            } else {
+                                console.log("删除错误");
+                            }
+                        });
+                    });
+                });
+            }
+
+
+            /*function modifyArticle(){
+                    $(".modify").click(function () {
+                       var ID = $(this).data("id");
+                       alert(ID);
+                       window.location.href = "/modify?ID="+ID;
+                   }); 
+                }*/
+
+        });
+    </script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.metisMenu.js"></script>
+    <script src="js/jquery.slimscroll.min.js"></script>
+    <script src="js/sweetalert.min.js"></script>
+    <script src="js/inspinia.js"></script>
+    <script src="js/pace.min.js"></script>
 
 </body>
 
