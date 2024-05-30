@@ -1,0 +1,61 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>Pdf工具箱-路漫漫其修远兮，吾将上下而求索</title>
+    <link href="../css/bootstrap.css" rel='stylesheet' type='text/css' />
+    <!-- jQuery (necessary JavaScript plugins) -->
+    <script src="../js/jquery.min.js"></script>
+    <!-- Custom Theme files -->
+    <link href="../css/dashboard.css" rel="stylesheet">
+    <link href="../css/style.css" rel='stylesheet' type='text/css' />
+    <link href="../css/style_upload.css" rel='stylesheet' type='text/css' />
+    <!--//Custom Theme files -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+
+<body>
+    <!-- header -->
+    <div class="col-md-2 sidebar">
+        <div class="sidebar_top">
+            <h1><a href="/">Singer<span> Stone</span></a></h1>
+        </div>
+        <div class="top-navigation">
+            <div class="t-menu">菜单</div>
+            <div class="t-img">
+                <img src="../images/lines.png" alt="" />
+            </div>
+            <div class="clearfix"> </div>
+        </div>
+        <%- include('common/navigation') %>
+    </div>
+    <div class="col-md-12 news-1">
+        <div class="bg"></div>
+        <div class="bg bg2"></div>
+        <div class="bg bg3"></div>
+        <div class="container">
+            <div class="uploadzone">
+                <div class="wrapper" id="drag-warper">
+                    <div class="drag-area" id="drag-area">
+                        <form action="#" id="drag-form">
+                            <div class="upload-file">
+                                <input class="file-input" type="file" id="file-input" name="sampleFile" hidden multiple>
+                                <span class="tip">选择文件</span>
+                            </div>
+                            <i class="fas fa-cloud-upload-alt" id="drag-cloud"></i>
+                            <p id="drag_text">Click Or Drag and Drop File to Upload</p>
+                        </form>
+                    </div>
+                    <section class="progress-area"></section>
+                    <section class="uploaded-area"></section>
+                </div>
+            </div>
+            <div id="convert_btn" class="convert-file">(●'◡'●)开始转换</div>
+            <div id="snackbar"></div>
+        </div>
+        <script src="../js/upload.js"></script>
+    </div>
+</body>
+
+</html>
