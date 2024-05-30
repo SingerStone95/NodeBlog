@@ -74,7 +74,7 @@ converBtn.addEventListener("click", () => {
         var spans = document.querySelectorAll(".uploaded-area .row .details .name");
         for (let span of spans) {
           let span_text = span.innerText;
-          let details = span.parentNode;
+          let details = span.parentNode.parentNode.parentNode;
           if (span_text.split('•')[0].trim() == response.filename) {
             if (response.process == 0) {
               span.innerText = `${response.filename} • 正在转换`;

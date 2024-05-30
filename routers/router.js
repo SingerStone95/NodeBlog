@@ -670,6 +670,7 @@ exports.convert = function (ws, req) {
         for (const filename of file_list) {
             let convert_file = path.join(__dirname, '../cdn/' + filename);
             let out_file = `${filename}`.replace(/\.pdf$/, ".txt");
+            let converted_file = path.join(__dirname, '../cdn/' + out_file);
             var ret_msg = { state: 'process', filename: filename, process: 0 };
             ws.send(JSON.stringify(ret_msg));
             try {
@@ -677,7 +678,7 @@ exports.convert = function (ws, req) {
                 console.log(command);
                 execSync(command, { stdio: 'inherit' });
                 ret_msg.process = 1;
-                out_put_file_list.push(`${convert_file}`);
+                out_put_file_list.push(`${converted_file}`);
             } catch (error) {
                 console.error(`执行错误: ${error}`);
                 ret_msg.process = -1;
