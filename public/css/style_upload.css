@@ -249,7 +249,7 @@ section .details span {
 }
 
 @keyframes fadeInOut {
-    0% {
+    10% {
         opacity: 1;
     }
 
@@ -263,7 +263,7 @@ section .details span {
 }
 
 .fade-animation {
-    animation: fadeInOut 4s ease-in-out infinite;
+    animation: fadeInOut 2s ease-in-out infinite;
 }
 
 @keyframes slide {

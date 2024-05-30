@@ -673,7 +673,7 @@ exports.convert = function (ws, req) {
             var ret_msg = { state: 'process', filename: filename, process: 0 };
             ws.send(JSON.stringify(ret_msg));
             try {
-                let command = `cd ${cdn_folder} && python ${script_dir}main.py --file ${convert_file} --out_file ${out_file}`;
+                let command = `cd ${cdn_folder} && python3 ${script_dir}main.py --file ${convert_file} --out_file ${out_file}`;
                 console.log(command);
                 execSync(command, { stdio: 'inherit' });
                 ret_msg.process = 1;
