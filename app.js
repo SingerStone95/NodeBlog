@@ -1,26 +1,30 @@
-﻿var express = require("express");
-var app = express();
-var router = require("./routers/router.js");
-var path = require('path');
-var bodyParser = require('body-parser');
-var ejs = require('ejs');
-var https = require('https');
-var http = require('http');
-var fs = require('fs');
-var session = require('express-session');
+﻿const express = require("express");
+const app = express();
+const expressWs = require('express-ws')
+const router = require("./routers/router.js");
+const path = require('path');
+const bodyParser = require('body-parser');
+const ejs = require('ejs');
+const https = require('https');
+const http = require('http');
+const fs = require('fs');
+const session = require('express-session');
+const fileUpload = require('express-fileupload');
+expressWs(app)
 //同步读取密钥和签名证书
-var options = {
-    key: fs.readFileSync('./cert/server.key'),
-    cert: fs.readFileSync('./cert/server.crt')
-}
-var httpsServer = https.createServer(options, app);
+// var options = {
+//     key: fs.readFileSync('./cert/server.key'),
+//     cert: fs.readFileSync('./cert/server.crt')
+// }
+// var httpsServer = https.createServer(options, app);
+const httpServer = http.createServer(app);
 //使用session
 app.use(session({
     secret: 'keyboard cat',
     resave: false,
     saveUninitialized: true
 }));
-
+app.use(fileUpload());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("./public"));
@@ -48,7 +52,7 @@ app.post("/delArticle", router.delArticle);
 
 //注册页面
 app.get("/register", router.showRegister);
-app.post("/doRegister",router.doRegister);
+app.post("/doRegister", router.doRegister);
 
 //登陆页面
 app.get("/login", router.showLogin);
@@ -96,10 +100,9 @@ app.get("/manage", router.getManage);
 
 app.get("/modify", router.showModify);
 app.post("/update", router.updateArticle);
-
 app.get("/jijin", router.showJijin);
 app.get("/doDeleteJijin", router.deleteJijin);
-app.post("/doAddJijin",router.addJijin)
+app.post("/doAddJijin", router.addJijin)
 //VisitorNum(游览数)
 app.post("/addVisitorNum", router.addVisitorNum);
 app.post("/doVisitorNum", router.doVisitorNum);
@@ -107,16 +110,17 @@ app.post("/doVisitorNum", router.doVisitorNum);
 //addThumbsUp(点赞数)
 app.post("/addThumbsUp", router.addThumbsUp);
 app.post("/doThumbsUp", router.doThumbsUp);
-
+app.post('/upload', router.uploadFile);
+app.ws('/convert', router.convert);
 console.log("Server running ...");
 
 
 
 
 
-//app.listen(3000);
+app.listen(8889);
 
 //https监听3000端口
-httpsServer.listen(3000);
+//httpsServer.listen(3000);
 //http监听3001端口
-//httpServer.listen(3500);
+httpServer.listen(8888);

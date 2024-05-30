@@ -1,12 +1,14 @@
-var formidable = require("formidable");
-var db = require("../model/db.js");
+const path = require('path')
+const db = require("../model/db.js");
 const { ObjectId } = require('mongodb');
-var dbhandle = require("../model/dbhandle.js");
-var md5 = require("../model/md5.js");
-var jijinfile = require("../jijinScript/filehandle.js");
-var moment = require("moment");
-var MongoClient = require("mongodb").MongoClient,
-    test = require("assert");
+const dbhandle = require("../model/dbhandle.js");
+const md5 = require("../model/md5.js");
+const jijinfile = require("../jijinScript/filehandle.js");
+const moment = require("moment");
+const execSync = require("child_process").execSync;
+const archiver = require('archiver');
+const fs = require('fs');
+const crypto = require('crypto');
 //首页
 exports.showIndex = function (req, res) {
     res.render("index");
@@ -630,3 +632,94 @@ exports.doThumbsUp = function (req, res) {
     });
 
 };
+
+function generateRandomString(length) {
+    return crypto.randomBytes(Math.ceil(length / 2)).toString('hex');
+}
+exports.uploadFile = function (req, res) {
+    if (!req.files || Object.keys(req.files).length === 0) {
+        return res.status(400).send('No files were uploaded.');
+    }
+    let filename = Buffer.from(req.files.sampleFile.name, "latin1").toString("utf8");
+    if (filename == undefined) {
+        res.status(500).send('filename is nil');
+        return;
+    }
+    let uploadPath = path.join(__dirname, '../cdn/' + filename);
+    console.log(uploadPath);
+    // Use the mv() method to place the file somewhere on your server
+    req.files.sampleFile.mv(uploadPath, function (err) {
+        if (err) {
+            console.log(err);
+            return res.status(500).send(err);
+        }
+        res.send('{result:0}');
+    });
+}
+
+
+exports.convert = function (ws, req) {
+    ws.on('message', function (msg) {
+        console.log(`receive message ${msg}`);
+        let response = JSON.parse(msg);
+        let file_list = response.data;
+        let script_dir = path.join(__dirname, '../tools_script/chinese-pdf-ocr/demo_gui/');
+        let cdn_folder = path.join(__dirname, '../cdn/');
+        ws.send('{"state":"start"}');
+        var out_put_file_list = [];
+        for (const filename of file_list) {
+            let convert_file = path.join(__dirname, '../cdn/' + filename);
+            let out_file = `${filename}`.replace(/\.pdf$/, ".txt");
+            var ret_msg = { state: 'process', filename: filename, process: 0 };
+            ws.send(JSON.stringify(ret_msg));
+            try {
+                let command = `cd ${cdn_folder} && python ${script_dir}main.py --file ${convert_file} --out_file ${out_file}`;
+                console.log(command);
+                execSync(command, { stdio: 'inherit' });
+                ret_msg.process = 1;
+                out_put_file_list.push(`${convert_file}`);
+            } catch (error) {
+                console.error(`执行错误: ${error}`);
+                ret_msg.process = -1;
+                ret_msg.error = `${error}`;
+            }
+            console.log(JSON.stringify(ret_msg));
+            ws.send(JSON.stringify(ret_msg));
+        }
+        var out_zip_file_name = generateRandomString(16)+'.zip';
+        const output = fs.createWriteStream(`${cdn_folder}${out_zip_file_name}`);
+        const archive = archiver('zip', {
+            zlib: { level: 9 }
+        });
+        archive.on('warning', function (err) {
+            if (err.code === 'ENOENT') {
+                console.warn(err);
+            } else {
+                console.warn(err);
+            }
+        });
+        archive.on('error', function (err) {
+            console.warn(err);
+        });
+        archive.on('warning', function (err) {
+            console.warn(err);
+        });
+        archive.on('finish', function () {
+            console.log('ZIP 归档已完成。');
+        });
+        archive.pipe(output);
+        out_put_file_list.forEach(function (filePath) {
+            const fileName = path.basename(filePath);
+            archive.file(filePath, { name: fileName });
+        });
+        archive.finalize();
+        var end_msg = {"state":"end","download_url":`${out_zip_file_name}`};
+        ws.send(JSON.stringify(end_msg));
+        ws.close();
+    })
+
+    // close 事件表示客户端断开连接时执行的回调函数
+    ws.on('close', function (e) {
+        console.log('close connection')
+    })
+}
