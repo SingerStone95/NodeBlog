@@ -687,7 +687,7 @@ exports.convert = function (ws, req) {
             console.log(JSON.stringify(ret_msg));
             ws.send(JSON.stringify(ret_msg));
         }
-        var out_zip_file_name = generateRandomString(16)+'.zip';
+        var out_zip_file_name = generateRandomString(16) + '.zip';
         const output = fs.createWriteStream(`${cdn_folder}${out_zip_file_name}`);
         const archive = archiver('zip', {
             zlib: { level: 9 }
@@ -714,7 +714,16 @@ exports.convert = function (ws, req) {
             archive.file(filePath, { name: fileName });
         });
         archive.finalize();
-        var end_msg = {"state":"end","download_url":`${out_zip_file_name}`};
+        out_put_file_list.forEach((filePath) => {
+            fs.unlink(filePath, (err) => {
+                if (err) {
+                    console.error(`删除文件失败: ${filePath}, 错误: ${err}`);
+                } else {
+                    console.log(`文件已删除: ${filePath}`);
+                }
+            });
+        });
+        var end_msg = { "state": "end", "download_url": `${out_zip_file_name}` };
         ws.send(JSON.stringify(end_msg));
         ws.close();
     })
