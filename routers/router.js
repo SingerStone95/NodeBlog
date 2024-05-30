@@ -714,15 +714,15 @@ exports.convert = function (ws, req) {
             archive.file(filePath, { name: fileName });
         });
         archive.finalize();
-        out_put_file_list.forEach((filePath) => {
-            fs.unlink(filePath, (err) => {
-                if (err) {
-                    console.error(`删除文件失败: ${filePath}, 错误: ${err}`);
-                } else {
-                    console.log(`文件已删除: ${filePath}`);
-                }
-            });
-        });
+        // out_put_file_list.forEach((filePath) => {
+        //     fs.unlink(filePath, (err) => {
+        //         if (err) {
+        //             console.error(`删除文件失败: ${filePath}, 错误: ${err}`);
+        //         } else {
+        //             console.log(`文件已删除: ${filePath}`);
+        //         }
+        //     });
+        // });
         var end_msg = { "state": "end", "download_url": `${out_zip_file_name}` };
         ws.send(JSON.stringify(end_msg));
         ws.close();
