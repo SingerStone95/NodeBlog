@@ -120,6 +120,6 @@ console.log("Server running ...");
 //websocket监听8889
 app.listen(8889);
 //https监听3000端口
-httpsServer.listen(3000);
+httpServer.listen(3000);
 //http监听8888端口
 //httpServer.listen(8888);
