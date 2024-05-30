@@ -12,11 +12,11 @@ const session = require('express-session');
 const fileUpload = require('express-fileupload');
 expressWs(app)
 //同步读取密钥和签名证书
-// var options = {
-//     key: fs.readFileSync('./cert/server.key'),
-//     cert: fs.readFileSync('./cert/server.crt')
-// }
-// var httpsServer = https.createServer(options, app);
+var options = {
+    key: fs.readFileSync('./cert/server.key'),
+    cert: fs.readFileSync('./cert/server.crt')
+}
+var httpsServer = https.createServer(options, app);
 const httpServer = http.createServer(app);
 //使用session
 app.use(session({
@@ -117,10 +117,9 @@ console.log("Server running ...");
 
 
 
-
+//websocket监听8889
 app.listen(8889);
-
 //https监听3000端口
-//httpsServer.listen(3000);
-//http监听3001端口
-httpServer.listen(8888);
+httpsServer.listen(3000);
+//http监听8888端口
+//httpServer.listen(8888);
