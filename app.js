@@ -7,7 +7,7 @@ const https = require('https');
 const fs = require('fs');
 const session = require('express-session');
 const fileUpload = require('express-fileupload');
-const WebSocket = require('ws');  
+const ws = require('ws');
 //同步读取密钥和签名证书
 var options = {
     key: fs.readFileSync('./cert/server.key'),
@@ -15,7 +15,6 @@ var options = {
 }
 var httpsServer = https.createServer(options, app);
 // 创建WebSocket服务器并监听连接  
-const wss = new WebSocket.Server({  port: 8889 });
 
 //const httpServer = http.createServer(app);
 //使用session
@@ -112,11 +111,13 @@ app.post("/addThumbsUp", router.addThumbsUp);
 app.post("/doThumbsUp", router.doThumbsUp);
 app.post('/upload', router.uploadFile);
 
-wss.on('connection', function connection(ws) {
-    router.convert(ws);
-});
+
 console.log("Server running ...");
 //https监听3000端口
 httpsServer.listen(3000);
 //http监听8888端口
 //httpServer.listen(3000);
+const wss = new ws.Server({ server: httpsServer});
+wss.on('connection', function connection(ws) {
+    router.convert(ws);
+});

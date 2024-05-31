@@ -54,7 +54,7 @@ converBtn.addEventListener("click", () => {
   console.log(files_name_upload);
   if ("WebSocket" in window) {
     // 打开一个 web socket
-    var ws_host = 'wss://' + getDomain() + ':8889';
+    var ws_host = 'wss://' + getDomain() + ':3000';
     console.log(ws_host);
     var ws = new WebSocket(ws_host);
     ws.onopen = function () {
