@@ -658,7 +658,7 @@ exports.uploadFile = function (req, res) {
 }
 
 
-exports.convert = function (ws, req) {
+exports.convert = function (ws) {
     ws.on('message', function (msg) {
         console.log(`receive message ${msg}`);
         let response = JSON.parse(msg);
@@ -692,13 +692,6 @@ exports.convert = function (ws, req) {
         const archive = archiver('zip', {
             zlib: { level: 9 }
         });
-        archive.on('warning', function (err) {
-            if (err.code === 'ENOENT') {
-                console.warn(err);
-            } else {
-                console.warn(err);
-            }
-        });
         archive.on('error', function (err) {
             console.warn(err);
         });
@@ -706,7 +699,16 @@ exports.convert = function (ws, req) {
             console.warn(err);
         });
         archive.on('finish', function () {
-            console.log('ZIP 归档已完成。');
+            console.log('ZIP 归档已完成。删除临时txt文件');
+            out_put_file_list.forEach((filePath) => {
+                fs.unlink(filePath, (err) => {
+                    if (err) {
+                        console.error(`删除文件失败: ${filePath}, 错误: ${err}`);
+                    } else {
+                        console.log(`文件已删除: ${filePath}`);
+                    }
+                });
+            });
         });
         archive.pipe(output);
         out_put_file_list.forEach(function (filePath) {
@@ -714,15 +716,6 @@ exports.convert = function (ws, req) {
             archive.file(filePath, { name: fileName });
         });
         archive.finalize();
-        // out_put_file_list.forEach((filePath) => {
-        //     fs.unlink(filePath, (err) => {
-        //         if (err) {
-        //             console.error(`删除文件失败: ${filePath}, 错误: ${err}`);
-        //         } else {
-        //             console.log(`文件已删除: ${filePath}`);
-        //         }
-        //     });
-        // });
         var end_msg = { "state": "end", "download_url": `${out_zip_file_name}` };
         ws.send(JSON.stringify(end_msg));
         ws.close();

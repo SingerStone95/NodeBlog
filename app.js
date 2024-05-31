@@ -1,23 +1,23 @@
 ﻿const express = require("express");
 const app = express();
-const expressWs = require('express-ws')
 const router = require("./routers/router.js");
-const path = require('path');
 const bodyParser = require('body-parser');
-const ejs = require('ejs');
 const https = require('https');
-const http = require('http');
+//const http = require('http');
 const fs = require('fs');
 const session = require('express-session');
 const fileUpload = require('express-fileupload');
-expressWs(app)
+const WebSocket = require('ws');  
 //同步读取密钥和签名证书
 var options = {
     key: fs.readFileSync('./cert/server.key'),
     cert: fs.readFileSync('./cert/server.crt')
 }
 var httpsServer = https.createServer(options, app);
-const httpServer = http.createServer(app);
+// 创建WebSocket服务器并监听连接  
+const wss = new WebSocket.Server({  port: 8889 });
+
+//const httpServer = http.createServer(app);
 //使用session
 app.use(session({
     secret: 'keyboard cat',
@@ -111,15 +111,12 @@ app.post("/doVisitorNum", router.doVisitorNum);
 app.post("/addThumbsUp", router.addThumbsUp);
 app.post("/doThumbsUp", router.doThumbsUp);
 app.post('/upload', router.uploadFile);
-app.ws('/convert', router.convert);
+
+wss.on('connection', function connection(ws) {
+    router.convert(ws);
+});
 console.log("Server running ...");
-
-
-
-
-//websocket监听8889
-app.listen(8889);
 //https监听3000端口
-httpServer.listen(3000);
+httpsServer.listen(3000);
 //http监听8888端口
-//httpServer.listen(8888);
+//httpServer.listen(3000);
