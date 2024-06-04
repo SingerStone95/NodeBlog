@@ -82,6 +82,9 @@ converBtn.addEventListener("click", () => {
             } else if (response.process == 1) {
               span.innerText = `${response.filename} • 转换完成`;
               details.classList.remove('fade-animation');
+            } else if (response.process == -1){
+              span.innerText = `${response.filename} • 转换出错`;
+              details.classList.remove('fade-animation');
             }
           }
         }

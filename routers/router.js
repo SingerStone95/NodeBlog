@@ -5,7 +5,7 @@ const dbhandle = require("../model/dbhandle.js");
 const md5 = require("../model/md5.js");
 const jijinfile = require("../jijinScript/filehandle.js");
 const moment = require("moment");
-const execSync = require("child_process").execSync;
+const { exec } = require('node:child_process');
 const archiver = require('archiver');
 const fs = require('fs');
 const crypto = require('crypto');
@@ -657,6 +657,19 @@ exports.uploadFile = function (req, res) {
     });
 }
 
+function executeCommand(commandWrapper) {
+    console.log(commandWrapper);
+    return new Promise((resolve, reject) => {
+        exec(commandWrapper.command, (error, stdout, stderr) => {
+            if (error) {
+                reject({ commandWrapper, error, stdout, stderr });
+            } else {
+                resolve({ commandWrapper, stdout, stderr });
+            }
+        });
+    });
+}
+
 
 exports.convert = function (ws) {
     ws.on('message', function (msg) {
@@ -667,58 +680,72 @@ exports.convert = function (ws) {
         let cdn_folder = path.join(__dirname, '../cdn/');
         ws.send('{"state":"start"}');
         var out_put_file_list = [];
+        const commands = [];
         for (const filename of file_list) {
             let convert_file = path.join(__dirname, '../cdn/' + filename);
             let out_file = `${filename}`.replace(/\.pdf$/, ".txt");
             let converted_file = path.join(__dirname, '../cdn/' + out_file);
             var ret_msg = { state: 'process', filename: filename, process: 0 };
             ws.send(JSON.stringify(ret_msg));
-            try {
-                let command = `cd ${cdn_folder} && python3 ${script_dir}main.py --file ${convert_file} --out_file ${out_file}`;
-                console.log(command);
-                execSync(command, { stdio: 'inherit' });
-                ret_msg.process = 1;
-                out_put_file_list.push(`${converted_file}`);
-            } catch (error) {
-                console.error(`执行错误: ${error}`);
-                ret_msg.process = -1;
-                ret_msg.error = `${error}`;
-            }
-            console.log(JSON.stringify(ret_msg));
-            ws.send(JSON.stringify(ret_msg));
+            let commandWrapper = {
+                command: `cd ${cdn_folder} && python3 ${script_dir}main.py --file ${convert_file} --out_file ${out_file}`,
+                filename: filename,
+                converted_file: converted_file
+            };
+            commands.push(commandWrapper);
         }
-        var out_zip_file_name = generateRandomString(16) + '.zip';
-        const output = fs.createWriteStream(`${cdn_folder}${out_zip_file_name}`);
-        const archive = archiver('zip', {
-            zlib: { level: 9 }
-        });
-        archive.on('error', function (err) {
-            console.warn(err);
-        });
-        archive.on('warning', function (err) {
-            console.warn(err);
-        });
-        archive.on('finish', function () {
-            console.log('ZIP 归档已完成。删除临时txt文件');
-            out_put_file_list.forEach((filePath) => {
-                fs.unlink(filePath, (err) => {
-                    if (err) {
-                        console.error(`删除文件失败: ${filePath}, 错误: ${err}`);
-                    } else {
-                        console.log(`文件已删除: ${filePath}`);
-                    }
+        Promise.all(commands.map(commandWrapper => {
+            return executeCommand(commandWrapper)
+                .then(result => {
+                    ws.send(JSON.stringify({ state: 'process', filename: result.commandWrapper.filename, process: 1 }));
+                    out_put_file_list.push(result.commandWrapper.converted_file);
+                    return result;
+                })
+                .catch(error => {
+                    console.error(error);
+                    ws.send(JSON.stringify({ state: 'process', filename: error.commandWrapper.filename, process: -1 }));
                 });
+        }))
+            .then(results => {
+                console.log('All commands completed.');
+                var out_zip_file_name = generateRandomString(16) + '.zip';
+                const output = fs.createWriteStream(`${cdn_folder}${out_zip_file_name}`);
+                const archive = archiver('zip', {
+                    zlib: { level: 9 }
+                });
+                archive.on('error', function (err) {
+                    console.warn(err);
+                });
+                archive.on('warning', function (err) {
+                    console.warn(err);
+                });
+                archive.on('finish', function () {
+                    console.log('ZIP 归档已完成。删除临时txt文件');
+                    out_put_file_list.forEach((filePath) => {
+                        fs.unlink(filePath, (err) => {
+                            if (err) {
+                                console.error(`删除文件失败: ${filePath}, 错误: ${err}`);
+                            } else {
+                                console.log(`文件已删除: ${filePath}`);
+                            }
+                        });
+                    });
+                });
+                archive.pipe(output);
+                out_put_file_list.forEach(function (filePath) {
+                    const fileName = path.basename(filePath);
+                    archive.file(filePath, { name: fileName });
+                });
+                archive.finalize();
+                var end_msg = { "state": "end", "download_url": `${out_zip_file_name}` };
+                ws.send(JSON.stringify(end_msg));
+                ws.close();
+            })
+            .catch(error => {
+                console.error('An error occurred:', error);
             });
-        });
-        archive.pipe(output);
-        out_put_file_list.forEach(function (filePath) {
-            const fileName = path.basename(filePath);
-            archive.file(filePath, { name: fileName });
-        });
-        archive.finalize();
-        var end_msg = { "state": "end", "download_url": `${out_zip_file_name}` };
-        ws.send(JSON.stringify(end_msg));
-        ws.close();
+
+
     })
 
     // close 事件表示客户端断开连接时执行的回调函数
