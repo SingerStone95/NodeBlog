@@ -25,6 +25,8 @@ app.use(session({
 }));
 app.use(fileUpload({
     limits: { fileSize: 4 * 1024 * 1024 * 1024 },
+    useTempFiles: true,
+    tempFileDir: '/tmp/'
 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -119,7 +121,7 @@ console.log("Server running ...");
 httpsServer.listen(3000);
 //http监听8888端口
 //httpServer.listen(3000);
-const wss = new ws.Server({ server: httpsServer});
+const wss = new ws.Server({ server: httpsServer });
 wss.on('connection', function connection(ws) {
     router.convert(ws);
 });
