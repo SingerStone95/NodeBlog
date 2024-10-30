@@ -23,7 +23,9 @@ app.use(session({
     resave: false,
     saveUninitialized: true
 }));
-app.use(fileUpload());
+app.use(fileUpload({
+    limits: { fileSize: 4 * 1024 * 1024 * 1024 },
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("./public"));
